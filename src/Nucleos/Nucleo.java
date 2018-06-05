@@ -4,40 +4,58 @@ public class Nucleo {
     private int id;
     private Thread[] threads;
 
-    public void daddi(){
+    public int daddi(int RF1, int RF2, int RD){
+        RF2=RF1+RD;
+        return RF2;
+    }
+
+    public int dadd(int RF1, int RF2, int RD){
+        RF2= RF1+RD;
+        return RF2;
+    }
+
+    public int dsub(int RF1, int RF2, int RD){
+        RF2=RF1-RD;
+        return RF2;
+    }
+
+    public int dmul(int RF1, int RF2, int RD){
+        RF2=RF1*RD;
+        return RF2;
+    }
+
+    public int ddiv(int RF1, int RF2, int RD){
+        RF2=RF1/RD;
+        return RF2;
 
     }
 
-    public void dadd(){
-
+    public int beqz(int RF, int RD){
+        int pc=0;
+        if(RF==0){
+            pc=4*RD;
+        }
+        return pc;
     }
 
-    public void dsub(){
-
+    public int bnez(int RF, int RD){
+        int pc=0;
+        if(RF!=0){
+            pc=4*RD;
+        }
+        return pc;
     }
 
-    public void dmul(){
-
+    public int jal(int RD, int PC){
+        int pc;
+        int R31=PC; //Deberia cambiar el registro R31 del contexto que lo pidio
+        pc=RD;
+        return pc;
     }
 
-    public void ddiv(){
-
-    }
-
-    public void beqz(){
-
-    }
-
-    public void bnez(){
-
-    }
-
-    public void jal(){
-
-    }
-
-    public void jr(){
-
+    public int jr(int RF){
+        int pc=RF;
+        return  pc;
     }
 
     public void lw(){
