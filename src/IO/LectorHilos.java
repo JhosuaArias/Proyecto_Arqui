@@ -34,7 +34,7 @@ public class LectorHilos {
                 }
 
                 this.instruccionesHilos.add(instruccionesHilo);
-
+                br.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
