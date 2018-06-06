@@ -1,33 +1,70 @@
 package MVC;
 
+import Caches.CacheDatos;
+import Caches.CacheInstrucciones;
 import Estructuras_Datos.Cola;
 import Estructuras_Datos.Hilo;
 import Estructuras_Datos.Instruccion;
 import Estructuras_Datos.MemoriaPrincipal;
 import IO.LectorHilos;
+import Nucleos.Nucleo0;
+import Nucleos.Nucleo1;
 
 import java.util.ArrayList;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Simulacion {
     /**IO**/
     private LectorHilos lectorHilos;
     private Terminal terminal;
 
+    /**Threads Control**/
+    private CyclicBarrier barrier;
+
+    private ReentrantLock[] posicionesCacheDatosN0;
+    private ReentrantLock[] posicionesCacheInstruccionN0;
+
+    private ReentrantLock[] posicionesCacheDatosN1;
+
+    private ReentrantLock[] reservaPosicionesCacheDatosN0;
+    private ReentrantLock[] reservaPosicionesCacheIntruccionN0;
+
+    private ReentrantLock busCacheDatos_Memoria;
+    private ReentrantLock busCacheInstruc_Memoria;
+
+
     /**Simulación**/
     private  ArrayList<Hilo> hilos;
     private int numeroHilos;
     private boolean isSlow;
     private int quantum;
-    boolean[] hilosActivos; // false: inactivo ; true : activo
-
+    private boolean[] hilosActivos; // false: inactivo ; true : activo
+    private int ticks;
     /**Componentes**/
     private Cola cola;
     private MemoriaPrincipal memoriaPrincipal;
+
+    private CacheDatos cacheDatosN0;
+    private CacheInstrucciones cacheInstruccionesN0;
+
+    private CacheDatos cacheDatosN1;
+    private CacheInstrucciones cacheInstruccionesN1;
+
+    private Nucleo0 nucleo0;
+    private Nucleo1 nucleo1;
+
+    /**Constantes**/
+    private static final int NUMERO_THREADS = 4;
+    private static final int BLOQUES_CACHE_N0 = 8;
+    private static final int BLOQUES_CACHE_N1 = 4;
 
     public Simulacion(String[] args, Terminal terminal) {
         this.numeroHilos = args.length;
         this.lectorHilos = new LectorHilos(args);
         this.terminal = terminal;
+        this.ticks = 0;
     }
 
     public void init() {
@@ -38,7 +75,19 @@ public class Simulacion {
         this.setCola();
         this.setMemoriaPrincipal(this.lectorHilos.getInstruccionesHilos() , this.hilos);
         this.setCaches();
+        this.setNucleos();
+        this.setElementosConcurrencia();
+        this.runClock();
     }
+
+    private void runClock() {
+        boolean hilosInactivos = false;
+        while(!hilosInactivos){
+
+        }
+    }
+
+    /**Setters**/
 
     private void setHilos(){
         this.hilos = new ArrayList<>();
@@ -63,8 +112,132 @@ public class Simulacion {
     }
 
     private void setCaches() {
+        this.cacheDatosN0 = new CacheDatos(BLOQUES_CACHE_N0);
+        this.cacheInstruccionesN0 = new CacheInstrucciones(BLOQUES_CACHE_N0);
+
+        this.cacheDatosN1 = new CacheDatos(BLOQUES_CACHE_N1);
+        this.cacheInstruccionesN1 = new CacheInstrucciones(BLOQUES_CACHE_N1);
     }
 
+    private void setNucleos() {
+
+        this.nucleo0 = new Nucleo0(this,0);
+        this.nucleo1 = new Nucleo1(this,1);
+    }
+
+    private void setElementosConcurrencia() {
+        this.barrier = new CyclicBarrier(NUMERO_THREADS);
+
+        this.busCacheDatos_Memoria = new ReentrantLock();
+        this.busCacheInstruc_Memoria = new ReentrantLock();
+
+        this.posicionesCacheDatosN0 = new ReentrantLock[BLOQUES_CACHE_N0];
+        this.posicionesCacheInstruccionN0 = new ReentrantLock[BLOQUES_CACHE_N0];
+
+        this.posicionesCacheDatosN1 = new ReentrantLock[BLOQUES_CACHE_N1];
+
+        this.reservaPosicionesCacheDatosN0 = new ReentrantLock[BLOQUES_CACHE_N0];
+        this.reservaPosicionesCacheIntruccionN0 = new ReentrantLock[BLOQUES_CACHE_N0];
+
+        for (int i = 0; i < BLOQUES_CACHE_N0; i++) {
+            this.posicionesCacheDatosN0[i] = new ReentrantLock();
+            this.posicionesCacheInstruccionN0[i] = new ReentrantLock();
+
+            this.reservaPosicionesCacheDatosN0[i] = new ReentrantLock();
+            this.reservaPosicionesCacheIntruccionN0[i] = new ReentrantLock();
+        }
+
+        for (int i = 0; i < BLOQUES_CACHE_N1; i++) {
+            this.posicionesCacheDatosN1[i] = new ReentrantLock();
+        }
+
+    }
+
+    /**Pedidos de Recursos*/
+
+    public Hilo pedirHiloCola() {
+        return this.cola.poll();
+    }
+
+    public void devolverHiloCola(Hilo hilo) {
+        this.cola.add(hilo);
+    }
+
+    public boolean isColaNull() {
+        if(this.cola == null){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public void esperarTick(){
+        try {
+            this.barrier.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*Intenta bloquear*/
+
+    public void intentar_pedirBusInstruc_Memoria() throws InterruptedException {
+        this.busCacheInstruc_Memoria.tryLock();
+    }
+
+    public void intentar_pedirBusDatos_Memoria() throws InterruptedException {
+        this.busCacheDatos_Memoria.tryLock();
+    }
+
+    public void intentar_pedirPosicion_CacheDatosN0(int posicion) throws InterruptedException {
+        this.posicionesCacheDatosN0[posicion].tryLock();
+    }
+
+    public void intentar_pedirPosicion_CacheInstrucN0(int posicion) throws InterruptedException {
+        this.posicionesCacheInstruccionN0[posicion].tryLock();
+    }
+
+    public void intentar_pedirPosicion_CacheDatosN1(int posicion) throws InterruptedException {
+        this.posicionesCacheDatosN1[posicion].tryLock();
+    }
+
+    public void intentar_reservarPosicion_CacheDatosN0(int posicion) throws InterruptedException {
+        this.reservaPosicionesCacheDatosN0[posicion].tryLock();
+    }
+
+    public void intentar_reservarPosicion_CacheInstrucN0(int posicion) throws InterruptedException {
+        this.reservaPosicionesCacheIntruccionN0[posicion].tryLock();
+    }
+
+    /*Desbloquea*/
+
+    public void desbloquear_BusInstruc_Memoria()  {
+        this.busCacheInstruc_Memoria.unlock();
+    }
+
+    public void desbloquear_BusDatos_Memoria()  {
+        this.busCacheDatos_Memoria.unlock();
+    }
+
+    public void desbloquear_Posicion_CacheDatosN0(int posicion)  {
+        this.posicionesCacheDatosN0[posicion].unlock();
+    }
+
+    public void desbloquear_Posicion_CacheInstrucN0(int posicion) {
+        this.posicionesCacheInstruccionN0[posicion].unlock();
+    }
+
+    public void desbloquear_Posicion_CacheDatosN1(int posicion) {
+        this.posicionesCacheDatosN1[posicion].unlock();
+    }
+
+    public void desbloquear_ReservaPosicion_CacheDatosN0(int posicion)  {
+        this.reservaPosicionesCacheDatosN0[posicion].unlock();
+    }
+
+    public void desbloquear_ReservaPosicion_CacheInstrucN0(int posicion) {
+        this.reservaPosicionesCacheIntruccionN0[posicion].unlock();
+    }
 
 
 }
