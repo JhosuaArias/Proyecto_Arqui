@@ -6,9 +6,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class MemoriaPrincipal {
+    /**Datos**/
     private int[][] datos;
     private Instruccion[][] instrucciones;
-
+    /**Constantes**/
     private static final int BYTES_PALABRA = 4;
     private static final int PALABRAS_BLOQUE = 4;
     private static final int BLOQUES_DATOS = 24;
@@ -58,7 +59,7 @@ public class MemoriaPrincipal {
 
     public Instruccion[] getBloqueInstrucciones(int posicionBloque) {
         if(posicionBloque >= BLOQUES_DATOS + 1 && posicionBloque <= BLOQUES_DATOS + BLOQUES_INSTRUCCIONES + 1) {
-            return this.instrucciones[posicionBloque];
+            return this.instrucciones[posicionBloque-BLOQUES_DATOS];
         } else {
             return null;
         }
