@@ -3,15 +3,17 @@ package Nucleos;
 import MVC.Simulacion;
 
 public class Nucleo implements Runnable {
+
     protected Simulacion simulacion;
     protected int id;
-    protected Thread[] threads;
+
 
     public Nucleo(Simulacion simulacion, int id) {
         this.simulacion = simulacion;
         this.id = id;
     }
 
+    /**Operations**/
     public void daddi(){
 
     }

@@ -10,11 +10,11 @@ public class Cola {
         this.cola = new ArrayDeque<>();
     }
 
-    public Hilo poll() {
+    public synchronized Hilo poll() {
         return this.cola.poll();
     }
 
-    public void add(Hilo hilo) {
+    public synchronized void add(Hilo hilo) {
         this.cola.add(hilo);
     }
 }
