@@ -9,29 +9,30 @@ public class Nucleo {
     public void ejecutar_instruccion(Instruccion instruccion){
         int[] ejecuccion=instruccion.getPalabra();
         switch(ejecuccion[0]){
-            case 8:
+            case 8: //Daddi
+                //this.simulacion...
                 break;
-            case 32:
+            case 32: //Dadd
                 break;
-            case 34:
+            case 34: //Dsub
                 break;
-            case 12:
+            case 12: //Dmul
                 break;
-            case 14:
+            case 14: //Ddiv
                 break;
-            case 4:
+            case 4: //BEQZ
                 break;
-            case 5:
+            case 5: //BNEZ
                 break;
-            case 3:
+            case 3: //Jal
                 break;
-            case 2:
+            case 2: //JR
                 break;
-            case 35:
+            case 35: //LW
                 break;
-            case 43:
+            case 43: //SW
                 break;
-            case 63:
+            case 63: //Fin
                 break;
         }
 
@@ -40,6 +41,7 @@ public class Nucleo {
 
     public int daddi(int RF1, int RF2, int RD){
         RF2=RF1+RD;
+        //hilo.pc+=4;
         return RF2;
     }
 
@@ -92,16 +94,20 @@ public class Nucleo {
         return  pc;
     }
 
-    public void lw(){
+    public void lw(){ //Lleva override y super
 
     }
 
-    public void sw(){
+    public void sw(){ //Lleva override y super
 
     }
 
-    public void fin(){
+    public void fin(){ //Pone el hilo.esFin a true
 
     }
+
+    public void fallo_instrucciones(){}
+
+    public void fallo_datos(){}
 
 }
