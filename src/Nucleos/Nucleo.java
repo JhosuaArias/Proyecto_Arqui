@@ -1,8 +1,16 @@
 package Nucleos;
 
-public class Nucleo {
-    private int id;
-    private Thread[] threads;
+import MVC.Simulacion;
+
+public class Nucleo implements Runnable {
+    protected Simulacion simulacion;
+    protected int id;
+    protected Thread[] threads;
+
+    public Nucleo(Simulacion simulacion, int id) {
+        this.simulacion = simulacion;
+        this.id = id;
+    }
 
     public void daddi(){
 
@@ -52,4 +60,8 @@ public class Nucleo {
 
     }
 
+    @Override
+    public void run() {
+
+    }
 }
