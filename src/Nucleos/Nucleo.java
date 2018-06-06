@@ -1,11 +1,14 @@
 package Nucleos;
 
+import Estructuras_Datos.Instruccion;
+
 public class Nucleo {
     private int id;
     private Thread[] threads;
 
-    public void ejecutar_instruccion(int i){
-        switch(i){
+    public void ejecutar_instruccion(Instruccion instruccion){
+        int[] ejecuccion=instruccion.getPalabra();
+        switch(ejecuccion[0]){
             case 8:
                 break;
             case 32:
