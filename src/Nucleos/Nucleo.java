@@ -1,4 +1,5 @@
 package Nucleos;
+import Estructuras_Datos.Instruccion;
 import MVC.Simulacion;
 
 public class Nucleo implements Runnable {
@@ -13,9 +14,9 @@ public class Nucleo implements Runnable {
     }
   
   
-    public void ejecutar_instruccion(Instruccion instruccion){
-        int[] ejecuccion=instruccion.getPalabra();
-        switch(ejecuccion[0]){
+    public void ejecutar_instruccion(Instruccion instruccion) {
+        int[] ejecuccion = instruccion.getPalabra();
+        switch (ejecuccion[0]) {
             case 8: //Daddi
                 //this.simulacion...
                 break;
@@ -42,13 +43,8 @@ public class Nucleo implements Runnable {
             case 63: //Fin
                 break;
         }
-
-    /**Operations**/
-    public void daddi(){
-
-
     }
-
+    /**Operations**/
 
     public int daddi(int RF1, int RF2, int RD){
         RF2=RF1+RD;
@@ -120,61 +116,59 @@ public class Nucleo implements Runnable {
     public void fallo_instrucciones(){}
 
     public void fallo_datos(){}
-
-    public int[] getBloqueMemoria(int direccionMemoria)
-
-    {
-        int bloqueACargar[] = new int[4];
-        int numeroBloque = (direccionMemoria / 16);
-
-        if (numeroBloque > 24) //Utilizo la cache de instrucciones
-        {
-            for (int i = 0; i <= 3; ++i) {
-                //Falta de arreglar
-                bloqueACargar[i] = memoria.instrucciones[numeroBloque - 24][i];
-            }
-
-            return bloqueACargar;
-        }
-
-        //Utilizo la cache de Datos
-        else {
-
-            for (int i = 0; i <= 3; ++i) {
-                //Falta de arreglar
-                bloqueACargar[i] = memoria.instrucciones[numeroBloque][i];
-            }
-
-            return bloqueACargar;
-        }
-    }
-
-    public int getPalabraCache(int direccionMemoria, int nucleo)
-    {
-        int numeroBloque = (direccionMemoria / 16);
-        int direccionPalabra = (direccionMemoria -  (16 * numeroBloque)) /  4;
-
-        if (nucleo==0) //Estoy en el nucleo 0
-        {
-            int posicionCache = (direccionMemoria / 16) % 8;
-
-            if ( numeroBloque>24) //Utilizo la cache de instrucciones
-            {return cacheInstruccionesN0[posicionCache] [direccionPalabra];}
-
-            else {return cacheDatosN0[posicionCache] [direccionPalabra];}
-            }
-
-        	else //Soy N1
-            {
-                int posicionCache = (direccionMemoria / 16) % 4;
-
-                if (numeroBloque>24) //Utilizo la cache de instrucciones
-                {return cacheInstruccionesN1[posicionCache] [direccionPalabra];}
-
-                else {return cacheDatosN1[posicionCache] [direccionPalabra];}
-                }
-
-    }
+/**TODO Arreglar esto luego**/
+//    public int[] getBloqueMemoria(int direccionMemoria) {
+//        int bloqueACargar[] = new int[4];
+//        int numeroBloque = (direccionMemoria / 16);
+//
+//        if (numeroBloque > 24) //Utilizo la cache de instrucciones
+//        {
+//            for (int i = 0; i <= 3; ++i) {
+//                //Falta de arreglar
+//                bloqueACargar[i] = memoria.instrucciones[numeroBloque - 24][i];
+//            }
+//
+//            return bloqueACargar;
+//        }
+//
+//        //Utilizo la cache de Datos
+//        else {
+//
+//            for (int i = 0; i <= 3; ++i) {
+//                //Falta de arreglar
+//                bloqueACargar[i] = memoria.instrucciones[numeroBloque][i];
+//            }
+//
+//            return bloqueACargar;
+//        }
+//    }
+//
+//    public int getPalabraCache(int direccionMemoria, int nucleo)
+//    {
+//        int numeroBloque = (direccionMemoria / 16);
+//        int direccionPalabra = (direccionMemoria -  (16 * numeroBloque)) /  4;
+//
+//        if (nucleo==0) //Estoy en el nucleo 0
+//        {
+//            int posicionCache = (direccionMemoria / 16) % 8;
+//
+//            if ( numeroBloque>24) //Utilizo la cache de instrucciones
+//            {return cacheInstruccionesN0[posicionCache] [direccionPalabra];}
+//
+//            else {return cacheDatosN0[posicionCache] [direccionPalabra];}
+//            }
+//
+//        	else //Soy N1
+//            {
+//                int posicionCache = (direccionMemoria / 16) % 4;
+//
+//                if (numeroBloque>24) //Utilizo la cache de instrucciones
+//                {return cacheInstruccionesN1[posicionCache] [direccionPalabra];}
+//
+//                else {return cacheDatosN1[posicionCache] [direccionPalabra];}
+//                }
+//
+//    }
 
     @Override
     public void run() {
