@@ -1,11 +1,18 @@
 package Nucleos;
+import MVC.Simulacion;
 
-import Estructuras_Datos.Instruccion;
+public class Nucleo implements Runnable {
 
-public class Nucleo {
-    private int id;
-    private Thread[] threads;
+    protected Simulacion simulacion;
+    protected int id;
 
+
+    public Nucleo(Simulacion simulacion, int id) {
+        this.simulacion = simulacion;
+        this.id = id;
+    }
+  
+  
     public void ejecutar_instruccion(Instruccion instruccion){
         int[] ejecuccion=instruccion.getPalabra();
         switch(ejecuccion[0]){
@@ -35,6 +42,10 @@ public class Nucleo {
             case 63: //Fin
                 break;
         }
+
+    /**Operations**/
+    public void daddi(){
+
 
     }
 
@@ -110,4 +121,8 @@ public class Nucleo {
 
     public void fallo_datos(){}
 
+    @Override
+    public void run() {
+
+    }
 }
