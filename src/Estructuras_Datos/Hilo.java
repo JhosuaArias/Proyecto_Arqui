@@ -7,10 +7,14 @@ public class Hilo {
     private int pc;
     private Instruccion ir;
     private boolean esFin;
+    private int quantumRestante;
+    private int quantum;
 
-    public Hilo(String nombre, int id) {
+    public Hilo(String nombre, int id, int quantum) {
         this.nombre = nombre;
         this.id = id;
+        this.quantumRestante = quantum;
+        this.quantum = quantum;
         this.setUp();
     }
 
@@ -19,6 +23,14 @@ public class Hilo {
         this.pc = 0;
         this.ir = null;
         this.esFin = false;
+    }
+
+    public void reiniciarQuantum() {
+        this.quantumRestante = this.quantum;
+    }
+
+    public void restarQuantum() {
+        this.quantumRestante--;
     }
 
     /**Setters and getters**/

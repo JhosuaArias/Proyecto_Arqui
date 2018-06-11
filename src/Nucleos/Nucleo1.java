@@ -23,18 +23,29 @@ public class Nucleo1 extends Nucleo{
 
     }
 
+    private void iteracion() {
+        int pc = this.hilo.getPc();
+        
+    }
+
+    private void esperarTick(){
+        this.simulacion.esperarTick();
+        this.hilo.restarQuantum();
+    }
+
     @Override
     public void run() {
         super.run();
         while (!this.simulacion.isColaNull()){
             System.out.println("Soy: " + this.thread.getName());
-
-            this.iteracion();
-
+            this.hilo = this.simulacion.pedirHiloCola();
+            if(this.hilo == null){
+                this.esperarTick();
+            } else {
+                this.iteracion();
+            }
         }
     }
 
-    private void iteracion() {
 
-    }
 }
