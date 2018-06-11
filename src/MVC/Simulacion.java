@@ -34,7 +34,6 @@ public class Simulacion {
     private ReentrantLock busCacheDatos_Memoria;
     private ReentrantLock busCacheInstruc_Memoria;
 
-
     /**Simulación**/
     private  ArrayList<Hilo> hilos;
     private int numeroHilos;
@@ -81,10 +80,21 @@ public class Simulacion {
     }
 
     private void runClock() {
-        boolean hilosInactivos = false;
-        while(!hilosInactivos){
-
+        while(this.sonHilosActivos()){
+            this.esperarTick();
+            this.ticks++;
         }
+
+        this.cola = null;
+
+        //TODO ESPERAR A QUE TODOS LOS THREADS ACABEN DE EJECUTAR
+    }
+
+    private boolean sonHilosActivos(){
+        for(boolean value: this.hilosActivos){
+            if(value){ return true;}
+        }
+        return false;
     }
 
     /**Setters**/

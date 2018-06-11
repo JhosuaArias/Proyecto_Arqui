@@ -29,12 +29,12 @@ public class Nucleo1 extends Nucleo{
         while (!this.simulacion.isColaNull()){
             System.out.println("Soy: " + this.thread.getName());
 
-            this.inicio();
+            this.iteracion();
 
         }
     }
 
-    private void inicio() {
+    private void iteracion() {
 
     }
 }

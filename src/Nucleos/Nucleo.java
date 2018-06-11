@@ -122,7 +122,7 @@ public class Nucleo implements Runnable {
     }
 
     public  void fin_quantum(){
-        this.simulacion.devolverHiloCola(hiloEjecucion);
+        this.hiloEjecucion.setEsFin(true);
     }
 
     public void fallo_instrucciones(){}
