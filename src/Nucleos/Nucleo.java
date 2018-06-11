@@ -128,9 +128,6 @@ public class Nucleo implements Runnable {
 
     public void fallo_instrucciones(){}
 
-    public void fallo_datos(){}
-    
-
     @Override
     public void run() {
 

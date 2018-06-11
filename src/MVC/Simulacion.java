@@ -1,5 +1,7 @@
 package MVC;
 
+import Caches.BloqueDatos;
+import Caches.BloqueInstrucciones;
 import Caches.CacheDatos;
 import Caches.CacheInstrucciones;
 import Estructuras_Datos.Cola;
@@ -58,6 +60,8 @@ public class Simulacion {
     private static final int NUMERO_THREADS = 4;
     private static final int BLOQUES_CACHE_N0 = 8;
     private static final int BLOQUES_CACHE_N1 = 4;
+    private static final int BLOQUES_DATOS = 24;
+
 
     public Simulacion(String[] args, Terminal terminal) {
         this.numeroHilos = args.length;
@@ -259,5 +263,100 @@ public class Simulacion {
         this.reservaPosicionesCacheIntruccionN0[posicion].unlock();
     }
 
+    /*Mapeo a chaces o memoria dada una direccion de memoria*/
+
+
+    /*Devolver un bloque de Cache instrucciones*/
+
+    public BloqueInstrucciones getPalabraCacheInstrucciones(int direccionMemoria, int nucleo)
+    {
+        BloqueInstrucciones bloqueDevolver = null;
+
+        int numeroBloque = (direccionMemoria / 16);
+        int direccionPalabra = (direccionMemoria -  (16 * numeroBloque)) /  4;
+
+        if (nucleo==0) //Estoy en el nucleo 0
+        {
+            int posicionCache =  getPosicionCacheN0(direccionMemoria);
+
+            if ( numeroBloque>=BLOQUES_DATOS) //Utilizo la cache de instrucciones
+            {bloqueDevolver=cacheInstruccionesN0.getBloque(posicionCache);}
+
+        }
+
+        	else //Soy N1
+        {
+            int posicionCache = getPosicionCacheN1(direccionMemoria);
+
+
+            if (numeroBloque>=24) //Utilizo la cache de instrucciones
+            {bloqueDevolver= cacheInstruccionesN0.getBloque(posicionCache);}
+            //else {return cacheDatosN1[posicionCache] [direccionPalabra];}
+        }
+        return  bloqueDevolver;
+    }
+
+    public BloqueDatos getPalabraCacheDatos(int direccionMemoria, int nucleo)
+    {
+        BloqueDatos bloqueDevolver = null;
+
+        int numeroBloque = (direccionMemoria / 16);
+        int direccionPalabra = (direccionMemoria -  (16 * numeroBloque)) /  4;
+
+        if (nucleo==0) //Estoy en el nucleo 0
+        {
+            int posicionCache = getPosicionCacheN0(direccionMemoria);
+
+            if ( numeroBloque<BLOQUES_DATOS) //Utilizo la cache de Datos
+            {return cacheDatosN0.getBloque(posicionCache);}
+        }
+
+        else //Soy N1
+        {
+            int posicionCache = getPosicionCacheN1(direccionMemoria);
+
+            if (numeroBloque<24) //Utilizo la cache de Datos
+            {return cacheDatosN1.getBloque(posicionCache);}
+        }
+        return  bloqueDevolver;
+    }
+
+
+    public Instruccion[] getBloqueMemoriaInstruccion(int direccionMemoria) {
+
+        Instruccion[] instruccionDevolver = null;
+        int numeroBloque = (direccionMemoria / 16);
+
+        if (numeroBloque >= 24) //Utilizo la cache de instrucciones
+        {
+            instruccionDevolver= memoriaPrincipal.getBloqueInstrucciones(numeroBloque);
+        }
+
+               return instruccionDevolver;
+    }
+
+    public int[] getBloqueMemoriaDatos(int direccionMemoria) {
+
+        int[] instruccionDevolver = null;
+
+        int numeroBloque = (direccionMemoria / 16);
+
+        if (numeroBloque < 24) //Utilizo la cache de Datos
+        {
+            instruccionDevolver=memoriaPrincipal.getBloqueDatos(numeroBloque);
+        }
+
+        return instruccionDevolver;
+    }
+
+    public int getPosicionCacheN0(int direccionMemoria)
+    {
+        return (direccionMemoria / 16) % BLOQUES_CACHE_N0;
+    }
+
+    public int getPosicionCacheN1 (int direccionMemoria)
+    {
+        return (direccionMemoria / 16) % BLOQUES_CACHE_N1;
+    }
 
 }
