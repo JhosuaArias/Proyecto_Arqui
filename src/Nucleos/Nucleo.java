@@ -12,7 +12,6 @@ public class Nucleo implements Runnable {
     public Nucleo(Simulacion simulacion, int id) {
         this.simulacion = simulacion;
         this.id = id;
-        hiloEjecucion=simulacion.pedirHiloCola();
     }
   
   

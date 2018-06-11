@@ -87,6 +87,16 @@ public class Simulacion {
 
         this.cola = null;
 
+        try {
+            for (int i = 0 ; i < 3; i++) {
+                wait();
+            }
+
+            wait(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         //TODO ESPERAR A QUE TODOS LOS THREADS ACABEN DE EJECUTAR
     }
 
@@ -103,7 +113,7 @@ public class Simulacion {
         this.hilos = new ArrayList<>();
         this.hilosActivos = new boolean[this.numeroHilos];
         for (int id= 0 ; id < this.numeroHilos ; id++) {
-            this.hilos.add(new Hilo("Hilo "+ id , id));
+            this.hilos.add(new Hilo("Hilo "+ id , id, this.quantum));
             this.hilosActivos[id] = true;
         }
     }
@@ -189,34 +199,34 @@ public class Simulacion {
         }
     }
 
-    /*Intenta bloquear*/
+    /**Intenta bloquear**/
 
-    public void intentar_pedirBusInstruc_Memoria() throws InterruptedException {
-        this.busCacheInstruc_Memoria.tryLock();
+    public boolean intentar_pedirBusInstruc_Memoria() {
+        return this.busCacheInstruc_Memoria.tryLock();
     }
 
-    public void intentar_pedirBusDatos_Memoria() throws InterruptedException {
-        this.busCacheDatos_Memoria.tryLock();
+    public boolean intentar_pedirBusDatos_Memoria() {
+        return this.busCacheDatos_Memoria.tryLock();
     }
 
-    public void intentar_pedirPosicion_CacheDatosN0(int posicion) throws InterruptedException {
-        this.posicionesCacheDatosN0[posicion].tryLock();
+    public boolean intentar_pedirPosicion_CacheDatosN0(int posicion) {
+        return this.posicionesCacheDatosN0[posicion].tryLock();
     }
 
-    public void intentar_pedirPosicion_CacheInstrucN0(int posicion) throws InterruptedException {
-        this.posicionesCacheInstruccionN0[posicion].tryLock();
+    public boolean intentar_pedirPosicion_CacheInstrucN0(int posicion) {
+        return this.posicionesCacheInstruccionN0[posicion].tryLock();
     }
 
-    public void intentar_pedirPosicion_CacheDatosN1(int posicion) throws InterruptedException {
-        this.posicionesCacheDatosN1[posicion].tryLock();
+    public boolean intentar_pedirPosicion_CacheDatosN1(int posicion) {
+        return this.posicionesCacheDatosN1[posicion].tryLock();
     }
 
-    public void intentar_reservarPosicion_CacheDatosN0(int posicion) throws InterruptedException {
-        this.reservaPosicionesCacheDatosN0[posicion].tryLock();
+    public boolean intentar_reservarPosicion_CacheDatosN0(int posicion) {
+        return this.reservaPosicionesCacheDatosN0[posicion].tryLock();
     }
 
-    public void intentar_reservarPosicion_CacheInstrucN0(int posicion) throws InterruptedException {
-        this.reservaPosicionesCacheIntruccionN0[posicion].tryLock();
+    public boolean intentar_reservarPosicion_CacheInstrucN0(int posicion) {
+        return this.reservaPosicionesCacheIntruccionN0[posicion].tryLock();
     }
 
     /*Desbloquea*/
