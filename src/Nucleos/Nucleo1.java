@@ -58,6 +58,8 @@ public class Nucleo1 extends Nucleo{
             /**Verificaciones de fin o quantum**/
             if (this.hilo.isEsFin()) {
                 mismoHilo = false;
+                this.simulacion.setInactivoHilo(this.hilo.getId());
+                this.hilo = null;
             } else if (this.hilo.getQuantumRestante() == 0) {
                 this.simulacion.devolverHiloCola(this.hilo);
                 this.hilo = null;

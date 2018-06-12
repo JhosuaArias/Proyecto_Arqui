@@ -359,5 +359,9 @@ public class Simulacion {
         return instruccionDevolver;
     }
 
+    public void setInactivoHilo(int posicion) {
+        this.hilosActivos[posicion] = false;
+    }
+
 
 }
