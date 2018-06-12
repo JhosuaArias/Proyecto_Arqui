@@ -127,7 +127,7 @@ public class Nucleo implements Runnable {
 
     }
 
-    public void esperarTick() {
+    public void esperarTick(boolean restarQuantum) {
         this.simulacion.esperarTick();
     }
 
