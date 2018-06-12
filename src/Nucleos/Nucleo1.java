@@ -24,6 +24,53 @@ public class Nucleo1 extends Nucleo{
 
     private BloqueInstrucciones resolverFalloCacheInstrucciones(int pc) {
         //TODO
+        /**
+         * Recibe pc que contiene la direccion de memoria
+         * Tiene que ir a buscar la instruccion a memoria
+         * Tiene que subir y poner esa instruccion en el cache, cambiar el estado
+         * de esta cache a C
+         * Esperar 40 ticks
+         * devolver el resultado
+         *
+         * Nota: N1 no requiere de reservar el bus
+         */
+        boolean bloqueado=false;
+
+        /**
+         * Aqui continuo haciendo ticks hasta que me den el bus
+         * ¿Como saber si no me dieron el bus?
+         */
+
+        while (bloqueado==false) {
+            if(this.simulacion.intentar_pedirBusInstruc_Memoria()==false){
+                this.esperarTick();
+            }
+            else {
+                bloqueado=true;
+            }
+        }
+
+        /**
+         * Espera de 40 ticks en lo que se resuelve el fallo
+         */
+
+        int i=0;
+        while(i!=40){
+            this.esperarTick();
+            ++i;
+        }
+
+        /**
+         * Obtengo el bloque de instrucciones desde memoria,
+         * ahora hay que cargarlos a la cache de instrucciones
+          */
+        Instruccion ins[]= simulacion.getBloqueMemoriaInstruccion(pc);
+        /**
+         * Falta setBloque para cache en simulacion?
+         */
+        //this.simulacion.setBloqueCacheInstruccionesN1(ins, pc);
+        this.simulacion.desbloquear_BusInstruc_Memoria();
+
         return null;
     }
 

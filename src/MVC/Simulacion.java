@@ -359,6 +359,11 @@ public class Simulacion {
         return instruccionDevolver;
     }
 
+
+    public void setBloqueCacheInstruccionesN1(BloqueInstrucciones bloque, int posicion){
+     cacheInstruccionesN1.setBloque(bloque, posicion);
+    }
+
     public void setInactivoHilo(int posicion) {
         this.hilosActivos[posicion] = false;
     }
