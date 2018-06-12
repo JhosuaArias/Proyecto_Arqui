@@ -105,22 +105,24 @@ public class Nucleo1 extends Nucleo{
             /**Verificaciones de fin o quantum**/
             if (this.hilo.isEsFin()) {
                 mismoHilo = false;
+                this.simulacion.setInactivoHilo(this.hilo.getId());
+                this.hilo = null;
             } else if (this.hilo.getQuantumRestante() == 0) {
                 this.simulacion.devolverHiloCola(this.hilo);
                 this.hilo = null;
                 mismoHilo = false;
             }
             /**Esperar un tick**/
-            this.esperarTick();
+            this.esperarTick(true);
         }
     }
 
 
 
     @Override
-    public void esperarTick() {
-        super.esperarTick();
-        if(this.hilo != null)
+    public void esperarTick(boolean restarQuantum) {
+        super.esperarTick(restarQuantum);
+        if(restarQuantum)
             this.hilo.restarQuantum();
     }
 
@@ -131,7 +133,7 @@ public class Nucleo1 extends Nucleo{
             System.out.println("Soy: " + this.thread.getName());
             this.hilo = this.simulacion.pedirHiloCola();
             if(this.hilo == null){
-                this.esperarTick();
+                this.esperarTick(false);
             } else {
                 this.iteracion();
             }
