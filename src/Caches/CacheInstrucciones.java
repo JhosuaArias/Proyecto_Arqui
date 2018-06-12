@@ -18,18 +18,24 @@ public class CacheInstrucciones {
     }
 
     public void setBloque(BloqueInstrucciones bloque, int posicion) {
-
+        if(posicion >= 0 && posicion < this.bloques.length) {
+            this.bloques[posicion] = bloque;
+        }
     }
 
     public void setDato(int posicion, int palabra, int valor) {
 
     }
 
-    public void setEtiqueta(int posicion, int valor) {
-
+    public void setEtiqueta(int posicion, int etiqueta) {
+        if(posicion >= 0 && posicion < this.bloques.length) {
+            this.bloques[posicion].setEtiqueta(etiqueta); ;
+        }
     }
 
     public void setEstado(int posicion, Estado estado) {
-
+        if(posicion >= 0 && posicion < this.bloques.length) {
+            this.bloques[posicion].setEstado(estado);
+        }
     }
 }

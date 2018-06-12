@@ -1,6 +1,9 @@
 package Nucleos;
 
+import Caches.BloqueInstrucciones;
+import Caches.Estado;
 import Estructuras_Datos.Hilo;
+import Estructuras_Datos.Instruccion;
 import MVC.Simulacion;
 
 public class Nucleo1 extends Nucleo{
@@ -19,18 +22,59 @@ public class Nucleo1 extends Nucleo{
         this.hilo = this.simulacion.pedirHiloCola();
     }
 
-    public void resolverFallo() {
+    private BloqueInstrucciones resolverFalloCacheInstrucciones(int pc) {
+        //TODO
+        return null;
+    }
 
+    private BloqueInstrucciones resolverFalloCacheDatos() {
+        //TODO
+        return null;
     }
 
     private void iteracion() {
-        int pc = this.hilo.getPc();
-        
+        boolean mismoHilo = true;
+
+        while (mismoHilo) {
+            /**Calculamos el bloque y posicion en caché*/
+            int pc = this.hilo.getPc();
+            int numeroBloque = this.simulacion.getNumeroBloque(pc);
+            BloqueInstrucciones bloqueInstrucciones = this.simulacion.getBloqueCacheInstrucciones(pc, this.id);
+            /**Verificamos si hay fallo de caché**/
+            if (!(bloqueInstrucciones.getEstado() == Estado.COMPARTIDO && bloqueInstrucciones.getEtiqueta() == numeroBloque)) {
+                //Hay fallo
+                bloqueInstrucciones = this.resolverFalloCacheInstrucciones(pc);
+            }
+            /**Se agarra la instrucción**/
+            int posicionCache = this.simulacion.getPosicionCacheN1(pc);
+            Instruccion instruccion = bloqueInstrucciones.getInstruccion(posicionCache);
+
+            /**Se suma el PC**/
+            this.hilo.sumarPc();
+
+            /**Se ejecuta la instruccion**/
+            this.ejecutar_instruccion(this.hilo, instruccion);
+
+            /**Verificaciones de fin o quantum**/
+            if (this.hilo.isEsFin()) {
+                mismoHilo = false;
+            } else if (this.hilo.getQuantumRestante() == 0) {
+                this.simulacion.devolverHiloCola(this.hilo);
+                this.hilo = null;
+                mismoHilo = false;
+            }
+            /**Esperar un tick**/
+            this.esperarTick();
+        }
     }
 
-    private void esperarTick(){
-        this.simulacion.esperarTick();
-        this.hilo.restarQuantum();
+
+
+    @Override
+    public void esperarTick() {
+        super.esperarTick();
+        if(this.hilo != null)
+            this.hilo.restarQuantum();
     }
 
     @Override

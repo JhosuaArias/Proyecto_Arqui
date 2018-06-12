@@ -17,7 +17,7 @@ public class BloqueInstrucciones {
 
 
     public Instruccion[] getPalabra() {
-        return palabra;
+        return this.palabra;
     }
 
     public void setPalabra(Instruccion[] palabra) {
@@ -38,6 +38,10 @@ public class BloqueInstrucciones {
 
     public void setEstado(Estado estado) {
         this.estado = estado;
+    }
+
+    public Instruccion getInstruccion(int posicion) {
+        return this.palabra[posicion];
     }
 
 }

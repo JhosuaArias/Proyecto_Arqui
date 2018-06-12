@@ -58,7 +58,8 @@ public class Nucleo implements Runnable {
             case 63: //Fin
                 break;
         }
-        this.simulacion.devolverHiloCola(hiloEjecucion);
+        /**Resto el quantum al hilo**/
+        hiloEjecucion.restarQuantum();
     }
     /**Operations**/
 
@@ -124,6 +125,10 @@ public class Nucleo implements Runnable {
 
     public  void fin_quantum(){
 
+    }
+
+    public void esperarTick() {
+        this.simulacion.esperarTick();
     }
 
     public void fallo_instrucciones(){}

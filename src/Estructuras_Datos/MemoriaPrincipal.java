@@ -50,7 +50,7 @@ public class MemoriaPrincipal {
     }
 
     public int[] getBloqueDatos(int posicionBloque) {
-        if(posicionBloque >= 0 && posicionBloque <= BLOQUES_DATOS) {
+        if(posicionBloque >= 0 && posicionBloque < BLOQUES_DATOS) {
             return this.datos[posicionBloque];
         } else {
             return null;
@@ -58,7 +58,7 @@ public class MemoriaPrincipal {
     }
 
     public Instruccion[] getBloqueInstrucciones(int posicionBloque) {
-        if(posicionBloque >= BLOQUES_DATOS + 1 && posicionBloque <= BLOQUES_DATOS + BLOQUES_INSTRUCCIONES + 1) {
+        if(posicionBloque >= BLOQUES_DATOS  && posicionBloque < BLOQUES_DATOS + BLOQUES_INSTRUCCIONES) {
             return this.instrucciones[posicionBloque-BLOQUES_DATOS];
         } else {
             return null;

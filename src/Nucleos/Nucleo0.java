@@ -28,6 +28,7 @@ public class Nucleo0 extends Nucleo{
             }else {
                 System.err.println("No debería pasar");
             }
+            this.esperarTick();
         }
     }
 }

@@ -23,7 +23,7 @@ public class Simulacion {
     private Terminal terminal;
 
     /**Threads Control**/
-    private CyclicBarrier barrier;
+    private final CyclicBarrier barrier = new CyclicBarrier(NUMERO_THREADS);
 
     private ReentrantLock[] posicionesCacheDatosN0;
     private ReentrantLock[] posicionesCacheInstruccionN0;
@@ -61,7 +61,10 @@ public class Simulacion {
     private static final int BLOQUES_CACHE_N0 = 8;
     private static final int BLOQUES_CACHE_N1 = 4;
     private static final int BLOQUES_DATOS = 24;
+    private static final int BYTES_BLOQUE = 16;
 
+
+    int i = 0;
 
     public Simulacion(String[] args, Terminal terminal) {
         this.numeroHilos = args.length;
@@ -87,12 +90,14 @@ public class Simulacion {
         while(this.sonHilosActivos()){
             this.esperarTick();
             this.ticks++;
+            System.out.println("Este es el Tick número: " + ticks);
+
         }
 
         this.cola = null;
 
         try {
-            for (int i = 0 ; i < 3; i++) {
+            for (int i = 0 ; i < (NUMERO_THREADS - 1); i++) {
                 wait();
             }
 
@@ -101,7 +106,6 @@ public class Simulacion {
             e.printStackTrace();
         }
 
-        //TODO ESPERAR A QUE TODOS LOS THREADS ACABEN DE EJECUTAR
     }
 
     private boolean sonHilosActivos(){
@@ -150,7 +154,6 @@ public class Simulacion {
     }
 
     private void setElementosConcurrencia() {
-        this.barrier = new CyclicBarrier(NUMERO_THREADS);
 
         this.busCacheDatos_Memoria = new ReentrantLock();
         this.busCacheInstruc_Memoria = new ReentrantLock();
@@ -188,22 +191,18 @@ public class Simulacion {
     }
 
     public boolean isColaNull() {
-        if(this.cola == null){
-            return true;
-        }else{
-            return false;
-        }
+        return this.cola == null;
     }
 
     public void esperarTick(){
         try {
-            this.barrier.await();
+            barrier.await();
         } catch (InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();
         }
     }
 
-    /**Intenta bloquear**/
+    /**Intenta bloquear locks**/
 
     public boolean intentar_pedirBusInstruc_Memoria() {
         return this.busCacheInstruc_Memoria.tryLock();
@@ -233,7 +232,7 @@ public class Simulacion {
         return this.reservaPosicionesCacheIntruccionN0[posicion].tryLock();
     }
 
-    /*Desbloquea*/
+    /**Desbloquea locks**/
 
     public void desbloquear_BusInstruc_Memoria()  {
         this.busCacheInstruc_Memoria.unlock();
@@ -263,60 +262,71 @@ public class Simulacion {
         this.reservaPosicionesCacheIntruccionN0[posicion].unlock();
     }
 
-    /*Mapeo a chaces o memoria dada una direccion de memoria*/
+    /*Mapeo de bloques y direcciones de memoria*/
+
+    public int getNumeroBloque(int direccionMemoria){
+        return (direccionMemoria/BYTES_BLOQUE);
+    }
+
+
+    public int getPosicionCacheN0(int direccionMemoria)
+    {
+        return this.getNumeroBloque(direccionMemoria)%BLOQUES_CACHE_N0;
+    }
+
+    public int getPosicionCacheN1 (int direccionMemoria)
+    {
+        return this.getNumeroBloque(direccionMemoria)%BLOQUES_CACHE_N1;
+    }
 
 
     /*Devolver un bloque de Cache instrucciones*/
 
-    public BloqueInstrucciones getPalabraCacheInstrucciones(int direccionMemoria, int nucleo)
+    public BloqueInstrucciones getBloqueCacheInstrucciones(int direccionMemoria, int nucleo)
     {
         BloqueInstrucciones bloqueDevolver = null;
 
-        int numeroBloque = (direccionMemoria / 16);
-        int direccionPalabra = (direccionMemoria -  (16 * numeroBloque)) /  4;
+        int numeroBloque = this.getNumeroBloque(direccionMemoria);
 
         if (nucleo==0) //Estoy en el nucleo 0
         {
-            int posicionCache =  getPosicionCacheN0(direccionMemoria);
+            int posicionCache =  this.getPosicionCacheN0(direccionMemoria);
 
-            if ( numeroBloque>=BLOQUES_DATOS) //Utilizo la cache de instrucciones
+            if (numeroBloque>=BLOQUES_DATOS) //Utilizo la cache de instrucciones
             {bloqueDevolver=cacheInstruccionesN0.getBloque(posicionCache);}
 
-        }
+        }else{ //Soy N1
 
-        	else //Soy N1
-        {
             int posicionCache = getPosicionCacheN1(direccionMemoria);
 
 
-            if (numeroBloque>=24) //Utilizo la cache de instrucciones
+            if (numeroBloque>=BLOQUES_DATOS) //Utilizo la cache de instrucciones
             {bloqueDevolver= cacheInstruccionesN0.getBloque(posicionCache);}
             //else {return cacheDatosN1[posicionCache] [direccionPalabra];}
         }
         return  bloqueDevolver;
     }
 
-    public BloqueDatos getPalabraCacheDatos(int direccionMemoria, int nucleo)
+    public BloqueDatos getBloqueCacheDatos(int direccionMemoria, int nucleo)
     {
         BloqueDatos bloqueDevolver = null;
 
-        int numeroBloque = (direccionMemoria / 16);
-        int direccionPalabra = (direccionMemoria -  (16 * numeroBloque)) /  4;
+        int numeroBloque = this.getNumeroBloque(direccionMemoria);
 
         if (nucleo==0) //Estoy en el nucleo 0
         {
             int posicionCache = getPosicionCacheN0(direccionMemoria);
 
             if ( numeroBloque<BLOQUES_DATOS) //Utilizo la cache de Datos
-            {return cacheDatosN0.getBloque(posicionCache);}
+            {bloqueDevolver = cacheDatosN0.getBloque(posicionCache);}
         }
 
         else //Soy N1
         {
             int posicionCache = getPosicionCacheN1(direccionMemoria);
 
-            if (numeroBloque<24) //Utilizo la cache de Datos
-            {return cacheDatosN1.getBloque(posicionCache);}
+            if (numeroBloque<BLOQUES_DATOS) //Utilizo la cache de Datos
+            {bloqueDevolver = cacheDatosN1.getBloque(posicionCache);}
         }
         return  bloqueDevolver;
     }
@@ -325,9 +335,9 @@ public class Simulacion {
     public Instruccion[] getBloqueMemoriaInstruccion(int direccionMemoria) {
 
         Instruccion[] instruccionDevolver = null;
-        int numeroBloque = (direccionMemoria / 16);
+        int numeroBloque = this.getNumeroBloque(direccionMemoria);
 
-        if (numeroBloque >= 24) //Utilizo la cache de instrucciones
+            if (numeroBloque >= BLOQUES_DATOS) //Utilizo la cache de instrucciones
         {
             instruccionDevolver= memoriaPrincipal.getBloqueInstrucciones(numeroBloque);
         }
@@ -339,9 +349,9 @@ public class Simulacion {
 
         int[] instruccionDevolver = null;
 
-        int numeroBloque = (direccionMemoria / 16);
+        int numeroBloque = this.getNumeroBloque(direccionMemoria);
 
-        if (numeroBloque < 24) //Utilizo la cache de Datos
+        if (numeroBloque < BLOQUES_DATOS) //Utilizo la cache de Datos
         {
             instruccionDevolver=memoriaPrincipal.getBloqueDatos(numeroBloque);
         }
@@ -349,14 +359,5 @@ public class Simulacion {
         return instruccionDevolver;
     }
 
-    public int getPosicionCacheN0(int direccionMemoria)
-    {
-        return (direccionMemoria / 16) % BLOQUES_CACHE_N0;
-    }
-
-    public int getPosicionCacheN1 (int direccionMemoria)
-    {
-        return (direccionMemoria / 16) % BLOQUES_CACHE_N1;
-    }
 
 }

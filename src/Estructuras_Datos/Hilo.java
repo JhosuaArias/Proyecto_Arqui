@@ -33,6 +33,10 @@ public class Hilo {
         this.quantumRestante--;
     }
 
+    public void sumarPc(){
+        this.pc++;
+    }
+
     /**Setters and getters**/
     public int getPc() {
         return pc;
@@ -78,6 +82,14 @@ public class Hilo {
 
     public int getId() {
         return id;
+    }
+
+    public int getQuantumRestante() {
+        return quantumRestante;
+    }
+
+    public void setQuantumRestante(int quantumRestante) {
+        this.quantumRestante = quantumRestante;
     }
 
 
