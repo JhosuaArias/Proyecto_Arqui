@@ -359,5 +359,8 @@ public class Simulacion {
         return instruccionDevolver;
     }
 
+    public void setBloqueCacheInstruccionesN1(BloqueInstrucciones bloque, int posicion){
+     cacheInstruccionesN1.setBloque(bloque, posicion);
+    }
 
 }
