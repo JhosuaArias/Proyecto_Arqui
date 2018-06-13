@@ -41,9 +41,9 @@ public class Nucleo1 extends Nucleo{
          * ¿Como saber si no me dieron el bus?
          */
 
-        while (bloqueado==false) {
-            if(this.simulacion.intentar_pedirBusInstruc_Memoria()==false){
-                this.esperarTick();
+        while (!bloqueado) {
+            if(!this.simulacion.intentar_pedirBusInstruc_Memoria()){
+                this.esperarTick(false);
             }
             else {
                 bloqueado=true;
@@ -56,7 +56,7 @@ public class Nucleo1 extends Nucleo{
 
         int i=0;
         while(i!=40){
-            this.esperarTick();
+            this.esperarTick(false);
             ++i;
         }
 
