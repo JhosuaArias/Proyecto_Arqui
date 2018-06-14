@@ -1,17 +1,20 @@
 package Nucleos;
 
+import Caches.BloqueInstrucciones;
 import Caches.Estado;
 import Estructuras_Datos.Hilo;
 import MVC.Simulacion;
 import javafx.util.Pair;
+
+import java.util.Arrays;
 
 public class Nucleo0 extends Nucleo{
 
     private Thread thread0;
     private Thread thread1;
 
-    private volatile Pair<EstadoThread,Integer> estadoThread0;
-    private volatile Pair<EstadoThread,Integer> estadoThread1;
+    private  Pair<EstadoThread,Integer> estadoThread0;
+    private  Pair<EstadoThread,Integer> estadoThread1;
 
     private Hilo hiloThread0;
     private Hilo hiloThread1;
@@ -60,8 +63,67 @@ public class Nucleo0 extends Nucleo{
         }
     }
 
-    private void iteracion() {
+    private void  iteracion(){
+        if(Thread.currentThread().getId() == thread0.getId()) {
+            this.iteracionHilo(this.hiloThread0);
+        }else if(Thread.currentThread().getId() == thread1.getId()){
+            this.iteracionHilo(this.hiloThread1);
+        }else {
+            System.err.println("No debería pasar");
+        }
+    }
 
+    private void iteracionHilo(Hilo hilo){
+        //TODO CAMBIAR.... PONER MÁS CONDICIONES DE ESPERA
+        boolean mismoHilo = true;
+
+        while (mismoHilo) {
+            /**Calculamos el bloque y posicion en caché*/
+            int pc = hilo.getPc();
+            int numeroBloque = this.simulacion.getNumeroBloque(pc);
+
+            BloqueInstrucciones bloqueInstrucciones = this.simulacion.getBloqueCacheInstrucciones(pc, this.id);
+            /**Verificamos si hay fallo de caché**/
+            if (!(bloqueInstrucciones.getEstado() == Estado.COMPARTIDO && bloqueInstrucciones.getEtiqueta() == numeroBloque)) {
+                //Hay fallo
+                this.resolverFalloCacheInstrucciones(pc);
+                bloqueInstrucciones = this.simulacion.getBloqueCacheInstrucciones(pc, this.id);
+
+            }
+            /**Se agarra la instrucción**/
+            int posicionCache = this.simulacion.getPosicionBloque(pc);
+            hilo.setIr(bloqueInstrucciones.getInstruccion(posicionCache));
+
+            System.err.println(Arrays.toString(hilo.getIr().getPalabra()));
+            /**Se suma el PC**/
+            hilo.sumarPc();
+
+            /**Se ejecuta la instruccion**/
+            this.ejecutar_instruccion(hilo);
+
+            /**Verificaciones de fin o quantum**/
+            if (hilo.isEsFin()) {
+                mismoHilo = false;
+                this.simulacion.setInactivoHilo(hilo.getId());
+                hilo = null;
+                /**Esperar un tick**/
+                this.esperarTick(false);
+            } else if (hilo.getQuantumRestante() == 1) {
+                this.simulacion.devolverHiloCola(hilo);
+                hilo.reiniciarQuantum();
+                hilo = null;
+                mismoHilo = false;
+                /**Esperar un tick**/
+                this.esperarTick(false);
+            }else{
+                /**Esperar un tick**/
+                this.esperarTick(true);
+            }
+
+        }
+    }
+
+    private void resolverFalloCacheInstrucciones(int pc) {
     }
 
     private void escogerHilo(){
