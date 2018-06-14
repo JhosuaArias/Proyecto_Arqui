@@ -15,8 +15,8 @@ public class Nucleo implements Runnable {
     }
   
   
-    public void ejecutar_instruccion(Hilo hiloEjecucion,Instruccion instruccion) {
-        int[] ejecucion = instruccion.getPalabra();
+    public void ejecutar_instruccion(Hilo hiloEjecucion) {
+        int[] ejecucion = hiloEjecucion.getIr().getPalabra();
         switch (ejecucion[0]) {
             case 8: //Daddi
                 /**
@@ -59,8 +59,6 @@ public class Nucleo implements Runnable {
                 this.fin(hiloEjecucion);
                 break;
         }
-        /**Resto el quantum al hilo**/
-        hiloEjecucion.restarQuantum();
     }
     /**Operations**/
 

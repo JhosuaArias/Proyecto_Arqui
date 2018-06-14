@@ -70,8 +70,9 @@ public class Nucleo1 extends Nucleo{
         /**
          * Falta setBloque para cache en simulacion?
          */
+        int numeroBloque = this.simulacion.getNumeroBloque(pc);
         int posicion = this.simulacion.getPosicionCacheN1(pc);
-        this.simulacion.setBloqueCacheInstruccionesN1(new BloqueInstrucciones(ins,pc,Estado.COMPARTIDO), posicion);
+        this.simulacion.setBloqueCacheInstruccionesN1(new BloqueInstrucciones(ins,numeroBloque,Estado.COMPARTIDO), posicion);
 
         this.simulacion.desbloquear_BusInstruc_Memoria();
 
@@ -99,14 +100,14 @@ public class Nucleo1 extends Nucleo{
             }
             /**Se agarra la instrucción**/
             int posicionCache = this.simulacion.getPosicionBloque(pc);
-            Instruccion instruccion = bloqueInstrucciones.getInstruccion(posicionCache);
+            this.hilo.setIr(bloqueInstrucciones.getInstruccion(posicionCache));
 
-            System.err.println(Arrays.toString(instruccion.getPalabra()));
+            System.err.println(Arrays.toString(this.hilo.getIr().getPalabra()));
             /**Se suma el PC**/
             this.hilo.sumarPc();
 
             /**Se ejecuta la instruccion**/
-            this.ejecutar_instruccion(this.hilo, instruccion);
+            this.ejecutar_instruccion(this.hilo);
 
             /**Verificaciones de fin o quantum**/
             if (this.hilo.isEsFin()) {
@@ -115,7 +116,7 @@ public class Nucleo1 extends Nucleo{
                 this.hilo = null;
                 /**Esperar un tick**/
                 this.esperarTick(false);
-            } else if (this.hilo.getQuantumRestante() == 0) {
+            } else if (this.hilo.getQuantumRestante() == 1) {
                 this.simulacion.devolverHiloCola(this.hilo);
                 this.hilo.reiniciarQuantum();
                 this.hilo = null;
