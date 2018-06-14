@@ -14,6 +14,11 @@ public class BloqueInstrucciones {
         this.etiqueta = 0;
         this.estado = Estado.INVALIDO;
     }
+    public BloqueInstrucciones(Instruccion[] instruccion, int etiqueta, Estado estado) {
+        this.palabra = instruccion;
+        this.etiqueta = etiqueta;
+        this.estado = estado;
+    }
 
 
     public Instruccion[] getPalabra() {

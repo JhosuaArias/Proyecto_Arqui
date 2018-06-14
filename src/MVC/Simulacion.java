@@ -96,6 +96,12 @@ public class Simulacion {
 
         this.cola = null;
 
+       this.waitThreads();
+
+    }
+
+
+    public synchronized void waitThreads() {
         try {
             for (int i = 0 ; i < (NUMERO_THREADS - 1); i++) {
                 wait();
@@ -105,7 +111,6 @@ public class Simulacion {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     private boolean sonHilosActivos(){
@@ -301,7 +306,7 @@ public class Simulacion {
 
 
             if (numeroBloque>=BLOQUES_DATOS) //Utilizo la cache de instrucciones
-            {bloqueDevolver= cacheInstruccionesN0.getBloque(posicionCache);}
+            {bloqueDevolver= cacheInstruccionesN1.getBloque(posicionCache);}
             //else {return cacheDatosN1[posicionCache] [direccionPalabra];}
         }
         return  bloqueDevolver;

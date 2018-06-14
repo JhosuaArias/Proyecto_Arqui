@@ -34,7 +34,7 @@ public class Hilo {
     }
 
     public void sumarPc(){
-        this.pc++;
+        this.pc+=4;
     }
 
     /**Setters and getters**/

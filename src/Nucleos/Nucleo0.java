@@ -3,14 +3,15 @@ package Nucleos;
 import Caches.Estado;
 import Estructuras_Datos.Hilo;
 import MVC.Simulacion;
+import javafx.util.Pair;
 
 public class Nucleo0 extends Nucleo{
 
     private Thread thread0;
     private Thread thread1;
 
-    private volatile EstadoThread estadoThread0;
-    private volatile EstadoThread estadoThread1;
+    private volatile Pair<EstadoThread,Integer> estadoThread0;
+    private volatile Pair<EstadoThread,Integer> estadoThread1;
 
     private Hilo hiloThread0;
     private Hilo hiloThread1;
@@ -20,15 +21,15 @@ public class Nucleo0 extends Nucleo{
         this.thread0 = new Thread(this,"Thread 0");
         this.thread1 = new Thread(this,"Thread 1");
 
-        this.estadoThread0 = EstadoThread.EJECUTANDO;
-        this.estadoThread1 = EstadoThread.ESPERANDO;
+        this.estadoThread0 = new Pair<>(EstadoThread.EJECUTANDO,-1);
+        this.estadoThread1 = new Pair<>(EstadoThread.ESPERANDO,-1);
 
         this.thread0.start();
         this.thread1.start();
     }
 
 
-    public synchronized EstadoThread getEstado(){
+    public synchronized Pair<EstadoThread,Integer> getEstado(){
         if(Thread.currentThread().getId() == this.thread0.getId()){
             return estadoThread0;
         } else if(Thread.currentThread().getId() == this.thread1.getId()) {
@@ -39,7 +40,7 @@ public class Nucleo0 extends Nucleo{
         }
     }
 
-    public synchronized void setEstado(EstadoThread estadoThread, int thread) {
+    public synchronized void setEstado(Pair<EstadoThread,Integer> estadoThread, int thread) {
         if(thread == 0) {
             this.estadoThread0 = estadoThread;
         }else{
@@ -110,10 +111,10 @@ public class Nucleo0 extends Nucleo{
         super.run();
 
         while (!this.simulacion.isColaNull()){
-            if(this.getEstado() == EstadoThread.EJECUTANDO) {
-                this.escogerHilo();
-                this.iteracion();
-            }
+//            if(this.getEstado() == EstadoThread.EJECUTANDO) {
+//                this.escogerHilo();
+//                this.iteracion();
+//            }
             this.esperarTick(false);
         }
     }

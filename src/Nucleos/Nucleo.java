@@ -16,8 +16,8 @@ public class Nucleo implements Runnable {
   
   
     public void ejecutar_instruccion(Hilo hiloEjecucion,Instruccion instruccion) {
-        int[] ejecuccion = instruccion.getPalabra();
-        switch (ejecuccion[0]) {
+        int[] ejecucion = instruccion.getPalabra();
+        switch (ejecucion[0]) {
             case 8: //Daddi
                 /**
                  * palabra 0: CP| palabra 1 y 2: #Registro|palabra 3: Immediato
@@ -25,37 +25,38 @@ public class Nucleo implements Runnable {
                  * ejecucion[2] obtiene el numero del registro
                  * ejecucion[3] obtiene el immediato
                  */
-                daddi(hiloEjecucion, hiloEjecucion.getRegistro(ejecuccion[1]),ejecuccion[2],ejecuccion[3]);
+                daddi(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],ejecucion[3]);
                 break;
             case 32: //Dadd
-                dadd(hiloEjecucion, hiloEjecucion.getRegistro(ejecuccion[1]),ejecuccion[2],hiloEjecucion.getRegistro(ejecuccion[3]));
+                dadd(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],hiloEjecucion.getRegistro(ejecucion[3]));
                 break;
             case 34: //Dsub
-                dsub(hiloEjecucion, hiloEjecucion.getRegistro(ejecuccion[1]),ejecuccion[2],hiloEjecucion.getRegistro(ejecuccion[3]));
+                dsub(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],hiloEjecucion.getRegistro(ejecucion[3]));
                 break;
             case 12: //Dmul
-                dmul(hiloEjecucion, hiloEjecucion.getRegistro(ejecuccion[1]),ejecuccion[2],hiloEjecucion.getRegistro(ejecuccion[3]));
+                dmul(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],hiloEjecucion.getRegistro(ejecucion[3]));
                 break;
             case 14: //Ddiv
-                ddiv(hiloEjecucion, hiloEjecucion.getRegistro(ejecuccion[1]),ejecuccion[2],hiloEjecucion.getRegistro(ejecuccion[3]));
+                ddiv(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],hiloEjecucion.getRegistro(ejecucion[3]));
                 break;
             case 4: //BEQZ
-                beqz(hiloEjecucion, hiloEjecucion.getRegistro(ejecuccion[1]),ejecuccion[3]);
+                //beqz(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
                 break;
             case 5: //BNEZ
-                bnez(hiloEjecucion, hiloEjecucion.getRegistro(ejecuccion[1]),ejecuccion[3]);
+               // bnez(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
                 break;
             case 3: //Jal
-                jal(hiloEjecucion, hiloEjecucion.getRegistro(ejecuccion[1]), hiloEjecucion.getPc());
+               // jal(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]), hiloEjecucion.getPc());
                 break;
             case 2: //JR
-                jr(hiloEjecucion, hiloEjecucion.getRegistro(ejecuccion[1]));
+               // jr(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]));
                 break;
             case 35: //LW
                 break;
             case 43: //SW
                 break;
             case 63: //Fin
+                this.fin(hiloEjecucion);
                 break;
         }
         /**Resto el quantum al hilo**/
@@ -90,25 +91,25 @@ public class Nucleo implements Runnable {
 
     public void beqz(Hilo hiloEjecucion, int RF, int Imm){
         if(RF==0){
-            hiloEjecucion.setPc(4*Imm);
+            hiloEjecucion.setPc(hiloEjecucion.getPc() +  4*Imm);
         }
     }
 
     public void bnez(Hilo hiloEjecucion, int RF, int Imm){
         if(RF!=0){
-            hiloEjecucion.setPc(4*Imm);
+            hiloEjecucion.setPc(hiloEjecucion.getPc() + 4*Imm);
         }
     }
 
     public void jal(Hilo hiloEjecucion, int RD, int PC){
 
         hiloEjecucion.setRegistro(31,hiloEjecucion.getPc()); //Deberia cambiar el registro R31 del contexto que lo pidio, el pc actual
-        hiloEjecucion.setPc(RD);
+        hiloEjecucion.setPc(hiloEjecucion.getPc() +  RD);
 
     }
 
     public void jr(Hilo hiloEjecucion, int PC){
-        hiloEjecucion.setPc(PC*4);
+        hiloEjecucion.setPc(PC);
     }
 
     public void lw(){ //Lleva override y super
