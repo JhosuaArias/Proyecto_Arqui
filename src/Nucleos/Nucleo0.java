@@ -40,11 +40,11 @@ public class Nucleo0 extends Nucleo{
         }
     }
 
-    public synchronized void setEstado(Pair<EstadoThread,Integer> estadoThread, int thread) {
+    public synchronized void setEstado(EstadoThread estado, int posicion ,int thread) {
         if(thread == 0) {
-            this.estadoThread0 = estadoThread;
+            this.estadoThread0 = new Pair<EstadoThread,Integer>(estado,posicion);
         }else{
-            this.estadoThread1 = estadoThread;
+            this.estadoThread1 = new Pair<EstadoThread,Integer>(estado,posicion);
         }
     }
 

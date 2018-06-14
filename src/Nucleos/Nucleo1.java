@@ -110,7 +110,6 @@ public class Nucleo1 extends Nucleo{
 
             /**Verificaciones de fin o quantum**/
             if (this.hilo.isEsFin()) {
-                System.err.println("Saque el hilo: " + hilo.getId());
                 mismoHilo = false;
                 this.simulacion.setInactivoHilo(this.hilo.getId());
                 this.hilo = null;
@@ -144,7 +143,6 @@ public class Nucleo1 extends Nucleo{
     public void run() {
         super.run();
         while (!this.simulacion.isColaNull()){
-            System.err.println("Soy: " + this.thread.getName());
             this.hilo = this.simulacion.pedirHiloCola();
             if(this.hilo == null){
                 this.esperarTick(false);

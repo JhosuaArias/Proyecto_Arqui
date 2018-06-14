@@ -3,6 +3,7 @@ package Estructuras_Datos;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 public class MemoriaPrincipal {
@@ -75,5 +76,10 @@ public class MemoriaPrincipal {
         if(posicionBloque >= BLOQUES_DATOS + 1 && posicionBloque <= BLOQUES_DATOS + BLOQUES_INSTRUCCIONES + 1) {
             this.instrucciones[posicionBloque] = bloque;
         }
+    }
+
+    @Override
+    public String toString(){
+        return "Datos: " + Arrays.toString(this.datos) + "\nInstrucciones: " + Arrays.toString(this.instrucciones);
     }
 }
