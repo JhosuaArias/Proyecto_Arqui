@@ -117,5 +117,6 @@ public class Nucleo0 extends Nucleo{
 //            }
             this.esperarTick(false);
         }
+        System.err.println("Terminé: " + Thread.currentThread().getName());
     }
 }

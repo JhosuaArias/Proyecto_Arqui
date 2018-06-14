@@ -17,6 +17,8 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.lang.Thread.sleep;
+
 public class Simulacion {
     /**IO**/
     private LectorHilos lectorHilos;
@@ -24,6 +26,7 @@ public class Simulacion {
 
     /**Threads Control**/
     private final CyclicBarrier barrier = new CyclicBarrier(NUMERO_THREADS);
+    private final CyclicBarrier finalBarrier = new CyclicBarrier(NUMERO_THREADS);
 
     private ReentrantLock[] posicionesCacheDatosN0;
     private ReentrantLock[] posicionesCacheInstruccionN0;
@@ -62,6 +65,7 @@ public class Simulacion {
     private static final int BLOQUES_CACHE_N1 = 4;
     private static final int BLOQUES_DATOS = 24;
     private static final int BYTES_BLOQUE = 16;
+    private static final int PALABRAS_BLOQUE = 4;
 
 
     int i = 0;
@@ -96,22 +100,17 @@ public class Simulacion {
 
         this.cola = null;
 
-       this.waitThreads();
+        this.esperarTick();
 
-    }
-
-
-    public synchronized void waitThreads() {
         try {
-            for (int i = 0 ; i < (NUMERO_THREADS - 1); i++) {
-                wait();
-            }
-
-            wait(5);
+            System.out.println("Finalizando Simulacion...");
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
+
 
     private boolean sonHilosActivos(){
         for(boolean value: this.hilosActivos){
@@ -284,6 +283,9 @@ public class Simulacion {
         return this.getNumeroBloque(direccionMemoria)%BLOQUES_CACHE_N1;
     }
 
+    public int getPosicionBloque(int direccionMemoria){
+        return (direccionMemoria/4)%4;
+    }
 
     /*Devolver un bloque de Cache instrucciones*/
 

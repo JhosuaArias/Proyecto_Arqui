@@ -98,10 +98,10 @@ public class Nucleo1 extends Nucleo{
 
             }
             /**Se agarra la instrucción**/
-            int posicionCache = this.simulacion.getPosicionCacheN1(pc);
+            int posicionCache = this.simulacion.getPosicionBloque(pc);
             Instruccion instruccion = bloqueInstrucciones.getInstruccion(posicionCache);
 
-            System.out.println(Arrays.toString(instruccion.getPalabra()));
+            System.err.println(Arrays.toString(instruccion.getPalabra()));
             /**Se suma el PC**/
             this.hilo.sumarPc();
 
@@ -152,6 +152,7 @@ public class Nucleo1 extends Nucleo{
                 this.iteracion();
             }
         }
+        System.err.println("Terminé: " + Thread.currentThread().getName());
     }
 
 
