@@ -272,6 +272,7 @@ public class Nucleo implements Runnable {
 
                         {
                             lwVerificarOtroCache_vengodeN1(direccionMemoria);
+                            noTermine=false;
                         }
 
                     }
@@ -301,6 +302,7 @@ public class Nucleo implements Runnable {
                             else //Pude bloquear el otro indice
                             {
                                 lwVerificarOtroCache_vengodeN1(direccionMemoria);
+                                noTermine=false;
                             }
 
                         }
@@ -339,6 +341,7 @@ public class Nucleo implements Runnable {
         }
 
         seResolvioFalloDeCache();
+
     }
 
 

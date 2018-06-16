@@ -334,7 +334,6 @@ public class Simulacion {
 
         int numeroBloque = getNumeroBloque(direccionMemoria);
         return memoriaPrincipal.getBloqueDatos(numeroBloque);
-
     }
 
 
