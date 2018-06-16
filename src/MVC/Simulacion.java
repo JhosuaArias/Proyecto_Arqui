@@ -289,82 +289,55 @@ public class Simulacion {
 
     /*Devolver un bloque de Cache instrucciones*/
 
-    public BloqueInstrucciones getBloqueCacheInstrucciones(int direccionMemoria, int nucleo)
+    public BloqueInstrucciones getBloqueCacheInstruccionesN0(int direccionMemoria)
     {
-        BloqueInstrucciones bloqueDevolver = null;
 
-        int numeroBloque = this.getNumeroBloque(direccionMemoria);
+        int posicionCache =  getPosicionCacheN0(direccionMemoria);
 
-        if (nucleo==0) //Estoy en el nucleo 0
-        {
-            int posicionCache =  this.getPosicionCacheN0(direccionMemoria);
+        return cacheInstruccionesN0.getBloque(posicionCache);
 
-            if (numeroBloque>=BLOQUES_DATOS) //Utilizo la cache de instrucciones
-            {bloqueDevolver=cacheInstruccionesN0.getBloque(posicionCache);}
-
-        }else{ //Soy N1
-
-            int posicionCache = getPosicionCacheN1(direccionMemoria);
-
-
-            if (numeroBloque>=BLOQUES_DATOS) //Utilizo la cache de instrucciones
-            {bloqueDevolver= cacheInstruccionesN1.getBloque(posicionCache);}
-            //else {return cacheDatosN1[posicionCache] [direccionPalabra];}
-        }
-        return  bloqueDevolver;
     }
 
-    public BloqueDatos getBloqueCacheDatos(int direccionMemoria, int nucleo)
+    public BloqueInstrucciones getBloqueCacheInstruccionesN1(int direccionMemoria)
     {
-        BloqueDatos bloqueDevolver = null;
+        int posicionCache = getPosicionCacheN1(direccionMemoria);
 
-        int numeroBloque = this.getNumeroBloque(direccionMemoria);
+        return cacheInstruccionesN0.getBloque(posicionCache);
 
-        if (nucleo==0) //Estoy en el nucleo 0
-        {
-            int posicionCache = getPosicionCacheN0(direccionMemoria);
 
-            if ( numeroBloque<BLOQUES_DATOS) //Utilizo la cache de Datos
-            {bloqueDevolver = cacheDatosN0.getBloque(posicionCache);}
-        }
+    }
 
-        else //Soy N1
-        {
-            int posicionCache = getPosicionCacheN1(direccionMemoria);
 
-            if (numeroBloque<BLOQUES_DATOS) //Utilizo la cache de Datos
-            {bloqueDevolver = cacheDatosN1.getBloque(posicionCache);}
-        }
-        return  bloqueDevolver;
+    public BloqueDatos getBloqueCacheDatosN0(int direccionMemoria) {
+
+
+        int posicionCache = getPosicionCacheN0(direccionMemoria);
+
+        return cacheDatosN0.getBloque(posicionCache);
+    }
+
+    public BloqueDatos getBloqueCacheDatosN1(int direccionMemoria) {
+
+        int posicionCache = getPosicionCacheN1(direccionMemoria);
+        return cacheDatosN1.getBloque(posicionCache);
     }
 
 
     public Instruccion[] getBloqueMemoriaInstruccion(int direccionMemoria) {
 
-        Instruccion[] instruccionDevolver = null;
-        int numeroBloque = this.getNumeroBloque(direccionMemoria);
+        int numeroBloque = getNumeroBloque(direccionMemoria);
+        return memoriaPrincipal.getBloqueInstrucciones(numeroBloque);
 
-            if (numeroBloque >= BLOQUES_DATOS) //Utilizo la cache de instrucciones
-        {
-            instruccionDevolver= memoriaPrincipal.getBloqueInstrucciones(numeroBloque);
-        }
-
-               return instruccionDevolver;
     }
 
     public int[] getBloqueMemoriaDatos(int direccionMemoria) {
 
-        int[] instruccionDevolver = null;
+        int numeroBloque = getNumeroBloque(direccionMemoria);
+        return memoriaPrincipal.getBloqueDatos(numeroBloque);
 
-        int numeroBloque = this.getNumeroBloque(direccionMemoria);
-
-        if (numeroBloque < BLOQUES_DATOS) //Utilizo la cache de Datos
-        {
-            instruccionDevolver=memoriaPrincipal.getBloqueDatos(numeroBloque);
-        }
-
-        return instruccionDevolver;
     }
+
+
 
 
     public void setBloqueCacheInstruccionesN1(BloqueInstrucciones bloque, int posicion){
