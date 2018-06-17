@@ -302,7 +302,7 @@ public class Simulacion {
     {
         int posicionCache = getPosicionCacheN1(direccionMemoria);
 
-        return cacheInstruccionesN0.getBloque(posicionCache);
+        return cacheInstruccionesN1.getBloque(posicionCache);
 
 
     }
