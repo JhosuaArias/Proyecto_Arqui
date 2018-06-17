@@ -9,6 +9,10 @@ import MVC.Simulacion;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import static Caches.Estado.COMPARTIDO;
+import static Caches.Estado.INVALIDO;
+import static Caches.Estado.MODIFICADO;
+
 public class Nucleo1 extends Nucleo{
 
     private Hilo hilo;
@@ -72,7 +76,7 @@ public class Nucleo1 extends Nucleo{
          */
         int numeroBloque = this.simulacion.getNumeroBloque(pc);
         int posicion = this.simulacion.getPosicionCacheN1(pc);
-        this.simulacion.setBloqueCacheInstruccionesN1(new BloqueInstrucciones(ins,numeroBloque,Estado.COMPARTIDO), posicion);
+        this.simulacion.setBloqueCacheInstruccionesN1(new BloqueInstrucciones(ins,numeroBloque,COMPARTIDO), posicion);
 
         this.simulacion.desbloquear_BusInstruc_Memoria();
 
@@ -108,17 +112,17 @@ public class Nucleo1 extends Nucleo{
          * Si el otro cache lo tiene en INVALIDO entonces lo traigo de memoria
          * Caso default: No esta en la otra cache por lo que hay que traerlo desde memoria
          */
-
-//        switch (this.simulacion.getBloqueCacheDatos(pc, 0).getEstado().toString()){
-//            case Estado.COMPARTIDO.toString():
-//                break;
-//            case "MODIFICADO":
-//                break;
-//            case "INVALIDO":
-//                break;
-//            default:
-//                break;
-//        }
+        //TODO COMPLETAR
+        switch (this.simulacion.getBloqueCacheDatosN1(pc).getEstado()){
+            case COMPARTIDO:
+                break;
+            case MODIFICADO:
+                break;
+            case INVALIDO:
+                break;
+            default:
+                break;
+        }
 
 
 
@@ -142,7 +146,7 @@ public class Nucleo1 extends Nucleo{
 
             BloqueInstrucciones bloqueInstrucciones = this.simulacion.getBloqueCacheInstruccionesN1(pc);
             /**Verificamos si hay fallo de caché**/
-            if (!(bloqueInstrucciones.getEstado() == Estado.COMPARTIDO && bloqueInstrucciones.getEtiqueta() == numeroBloque)) {
+            if (!(bloqueInstrucciones.getEstado() == COMPARTIDO && bloqueInstrucciones.getEtiqueta() == numeroBloque)) {
                 //Hay fallo
                 this.resolverFalloCacheInstrucciones(pc);
                 bloqueInstrucciones = this.simulacion.getBloqueCacheInstruccionesN1(pc);
