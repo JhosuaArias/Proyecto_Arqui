@@ -42,16 +42,16 @@ public class Nucleo implements Runnable {
                 ddiv(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],hiloEjecucion.getRegistro(ejecucion[3]));
                 break;
             case 4: //BEQZ
-                beqz(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
+                //beqz(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
                 break;
             case 5: //BNEZ
-                bnez(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
+               // bnez(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
                 break;
             case 3: //Jal
-               jal(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]), hiloEjecucion.getPc());
+               //jal(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]), hiloEjecucion.getPc());
                 break;
             case 2: //JR
-                jr(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]));
+                //jr(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]));
                 break;
             case 35: //LW
                 break;

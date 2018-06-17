@@ -109,16 +109,16 @@ public class Nucleo1 extends Nucleo{
          * Caso default: No esta en la otra cache por lo que hay que traerlo desde memoria
          */
 
-        switch (this.simulacion.getBloqueCacheDatos(pc, 0).getEstado().toString()){
-            case "COMPARTIDO":
-                break;
-            case "MODIFICADO":
-                break;
-            case "INVALIDO":
-                break;
-            default:
-                break;
-        }
+//        switch (this.simulacion.getBloqueCacheDatos(pc, 0).getEstado().toString()){
+//            case Estado.COMPARTIDO.toString():
+//                break;
+//            case "MODIFICADO":
+//                break;
+//            case "INVALIDO":
+//                break;
+//            default:
+//                break;
+//        }
 
 
 
