@@ -1,4 +1,6 @@
 package Nucleos;
+import Caches.BloqueDatos;
+import Caches.Estado;
 import Estructuras_Datos.Hilo;
 import Estructuras_Datos.Instruccion;
 import MVC.Simulacion;
@@ -110,8 +112,262 @@ public class Nucleo implements Runnable {
         hiloEjecucion.setPc(PC);
     }
 
-    public void lw(){ //Lleva override y super
+/*Logica de lw*/
 
+    public void lw(int nucleo, int direccionMemoria )
+    {
+
+        if (nucleo==0)
+        {lwN0(direccionMemoria);}
+        else
+        {
+            lwN1(direccionMemoria);
+        }
+    }
+
+    public void lwN0(int direccionMemoria){
+
+        boolean noTermine=true;
+
+        while (noTermine)
+        {
+
+            int posicion = simulacion.getPosicionCacheN0(direccionMemoria); //posicion en el cache
+
+            if(!(simulacion.intentar_pedirPosicion_CacheDatosN0(posicion))) //No bloquee el indice, vuelve a intentar
+            {
+                //esperarTick();
+            }
+
+            else //Logre bloquear el indice, sigo
+            {
+                BloqueDatos bloqueCacheDatos= simulacion.getBloqueCacheDatosN0(direccionMemoria); //Obtengo el bloque del cache
+
+                if (bloqueCacheDatos.getEtiqueta()!=simulacion.getNumeroBloque(direccionMemoria)) //La etiqueta no corresponde al bloque
+                {
+                    antesFalloDeCache();
+
+                    if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
+                    {
+                        simulacion.desbloquear_Posicion_CacheDatosN0(posicion);
+                       // esperarTick();
+                    }
+
+                    else //Pude bloquear el bus
+                    {
+                        if (bloqueCacheDatos.getEstado()== Estado.MODIFICADO) //Es otra etiqueta y esta modificado
+                        {
+                                /*Esperar 40 tics, cargar el bloque victima a memoria e invalidar*/
+                        }
+
+                        int posicionOtroExtremo = simulacion.getPosicionCacheN1(direccionMemoria);
+
+                        if (!(simulacion.intentar_pedirPosicion_CacheDatosN1(posicionOtroExtremo))) //No pude bloquear el otro indice
+                        {
+                            simulacion.desbloquear_Posicion_CacheDatosN0(posicion);
+                            simulacion.desbloquear_BusDatos_Memoria();
+                           // esperarTick();
+                        }
+                        else //pude bloquear el otro indice
+
+                        {
+                            lwVerificarOtroCache_vengodeN0(direccionMemoria);
+                        }
+
+                    }
+
+
+                }
+                else //La etiqueta corresponde al bloque
+                {
+                    if(bloqueCacheDatos.getEstado()== Estado.INVALIDO)  //La etiqueta esta invalida
+                    {
+                        antesFalloDeCache();
+
+                        if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
+                        {
+                            simulacion.desbloquear_Posicion_CacheDatosN0(posicion);
+                           // esperarTick();
+                        }
+
+                        else
+                        {
+                            int posicionOtroExtremo = simulacion.getPosicionCacheN1(direccionMemoria);
+
+                            if (!(simulacion.intentar_pedirPosicion_CacheDatosN1(posicionOtroExtremo))) //No pude bloquear el otro indice
+                            {
+                                simulacion.desbloquear_Posicion_CacheDatosN0(posicion);
+                                simulacion.desbloquear_BusDatos_Memoria();
+                             //   esperarTick();
+                            }
+                            else //Pude bloquear el otro indice
+                            {
+                                lwVerificarOtroCache_vengodeN0(direccionMemoria);
+                            }
+
+                        }
+
+
+                    }
+
+                    else //La etiqueta no esta invalida
+                    {
+                                /*Averiguo la palabra, cargo a registro, desbloqueo la posicion*/
+
+                        simulacion.desbloquear_Posicion_CacheDatosN0(posicion);
+
+                                /*Indicar que no se vuelva a meter en el while*/
+                        noTermine=false;
+                    }
+                }
+
+            }
+
+        }
+    }
+
+
+    public void lwN1(int direccionMemoria){
+
+        boolean noTermine=true;
+
+        while (noTermine)
+        {
+
+            int posicion = simulacion.getPosicionCacheN1(direccionMemoria); //posicion en el cache
+
+            if(!(simulacion.intentar_pedirPosicion_CacheDatosN1(posicion))) //No bloquee el indice, vuelve a intentar
+            {
+               // esperarTick();
+            }
+
+            else //Logre bloquear el indice, sigo
+            {
+                BloqueDatos bloqueCacheDatos= simulacion.getBloqueCacheDatosN1(direccionMemoria); //Obtengo el bloque del cache
+
+                if (bloqueCacheDatos.getEtiqueta()!=simulacion.getNumeroBloque(direccionMemoria)) //La etiqueta no corresponde al bloque
+                {
+                    if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
+                    {
+                        simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                      //  esperarTick();
+                    }
+
+                    else //Pude bloquear el bus
+                    {
+                        if (bloqueCacheDatos.getEstado()== Estado.MODIFICADO) //Es otra etiqueta y esta modificado
+                        {
+                                /*Esperar 40 tics, cargar el bloque victima a memoria e invalidar*/
+                        }
+
+                        int posicionOtroExtremo = simulacion.getPosicionCacheN1(direccionMemoria);
+
+                        if (!(simulacion.intentar_pedirPosicion_CacheDatosN1(posicionOtroExtremo))) //No pude bloquear el otro indice
+                        {
+                            simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                            simulacion.desbloquear_BusDatos_Memoria();
+                           // esperarTick();
+                        }
+                        else //pude bloquear el otro indice
+
+                        {
+                            lwVerificarOtroCache_vengodeN1(direccionMemoria);
+                            noTermine=false;
+                        }
+
+                    }
+
+
+                }
+                else //La etiqueta corresponde al bloque
+                {
+                    if(bloqueCacheDatos.getEstado()== Estado.INVALIDO)  //La etiqueta esta invalida
+                    {
+                        if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
+                        {
+                            simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                            //esperarTick();
+                        }
+
+                        else
+                        {
+                            int posicionOtroExtremo = simulacion.getPosicionCacheN0(direccionMemoria);
+
+                            if (!(simulacion.intentar_pedirPosicion_CacheDatosN0(posicionOtroExtremo))) //No pude bloquear el otro indice
+                            {
+                                simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                                simulacion.desbloquear_BusDatos_Memoria();
+                               // esperarTick();
+                            }
+                            else //Pude bloquear el otro indice
+                            {
+                                lwVerificarOtroCache_vengodeN1(direccionMemoria);
+                                noTermine=false;
+                            }
+
+                        }
+
+
+                    }
+
+                    else //La etiqueta no esta invalida
+                    {
+                                /*Averiguo la palabra, cargo a registro, desbloqueo la posicion*/
+
+                        simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+
+                                /*Indicar que no se vuelva a meter en el while*/
+                        noTermine=false;
+                    }
+                }
+
+            }
+
+        }
+    }
+
+    public  void lwVerificarOtroCache_vengodeN0(int direccionMemoria)
+    {
+    /*vengo de bloquear el indice del otro cache*/
+
+        BloqueDatos bloqueCacheDatosOtroExtremo = simulacion.getBloqueCacheDatosN1(direccionMemoria);
+        if (bloqueCacheDatosOtroExtremo.getEtiqueta()== simulacion.getNumeroBloque(direccionMemoria) && bloqueCacheDatosOtroExtremo.getEstado() == Estado.MODIFICADO) //Corresponde a la etiqueta y esta modificado
+        {
+        /*Diagrama en morado*/
+        }
+        else //No corresponde la etiqueta o no esta modificado
+        {
+        /*Diagrama en anaranjado*/
+        }
+
+        seResolvioFalloDeCache();
+
+    }
+
+
+
+    public  void lwVerificarOtroCache_vengodeN1(int direccionMemoria)
+    {
+    /*vengo de bloquear el indice del otro cache*/
+
+        BloqueDatos bloqueCacheDatosOtroExtremo = simulacion.getBloqueCacheDatosN0(direccionMemoria);
+        if (bloqueCacheDatosOtroExtremo.getEtiqueta()== simulacion.getNumeroBloque(direccionMemoria) && bloqueCacheDatosOtroExtremo.getEstado() == Estado.MODIFICADO) //Corresponde a la etiqueta y esta modificado
+        {
+        /*Diagrama en morado*/
+        }
+        else //No corresponde la etiqueta o no esta modificado
+        {
+        /*Diagrama en anaranjado*/
+        }
+
+    }
+
+    /*Fin de logica de LW*/
+
+    public void antesFalloDeCache() {
+    }
+
+    public void seResolvioFalloDeCache() {
     }
 
     public void sw(){ //Lleva override y super

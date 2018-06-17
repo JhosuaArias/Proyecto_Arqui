@@ -90,12 +90,12 @@ public class Nucleo1 extends Nucleo{
             int pc = this.hilo.getPc();
             int numeroBloque = this.simulacion.getNumeroBloque(pc);
 
-            BloqueInstrucciones bloqueInstrucciones = this.simulacion.getBloqueCacheInstrucciones(pc, this.id);
+            BloqueInstrucciones bloqueInstrucciones = this.simulacion.getBloqueCacheInstruccionesN1(pc);
             /**Verificamos si hay fallo de caché**/
             if (!(bloqueInstrucciones.getEstado() == Estado.COMPARTIDO && bloqueInstrucciones.getEtiqueta() == numeroBloque)) {
                 //Hay fallo
                 this.resolverFalloCacheInstrucciones(pc);
-                bloqueInstrucciones = this.simulacion.getBloqueCacheInstrucciones(pc, this.id);
+                bloqueInstrucciones = this.simulacion.getBloqueCacheInstruccionesN1(pc);
 
             }
             /**Se agarra la instrucción**/
