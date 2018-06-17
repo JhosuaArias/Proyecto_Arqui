@@ -3,6 +3,7 @@ package Nucleos;
 import Caches.BloqueInstrucciones;
 import Caches.Estado;
 import Estructuras_Datos.Hilo;
+import Estructuras_Datos.Instruccion;
 import MVC.Simulacion;
 import javafx.util.Pair;
 
@@ -124,6 +125,51 @@ public class Nucleo0 extends Nucleo{
     }
 
     private void resolverFalloCacheInstrucciones(int pc) {
+
+        this.setEstado(EstadoThread.FALLO_CACHE_DATOS, pc,0);
+        this.setEstado(EstadoThread.EJECUTANDO, pc,1);
+
+        /**
+         * Recibe pc que contiene la direccion de memoria
+         * Tiene que ir a buscar la instruccion a memoria
+         * Tiene que subir y poner esa instruccion en el cache, cambiar el estado
+         * de esta cache a C
+         * Esperar 40 ticks
+         * devolver el resultado
+         *
+         * Aqui hay que reservar el bus
+         */
+        boolean bloqueado=false;
+
+        while (!bloqueado) {
+            if(!this.simulacion.intentar_pedirBusInstruc_Memoria() && !this.simulacion.intentar_reservarPosicion_CacheInstrucN0(pc)){
+                this.esperarTick(false);
+            }
+            else {
+                bloqueado=true;
+            }
+        }
+
+        int i=0;
+        while(i!=40){
+            this.esperarTick(false);
+            ++i;
+        }
+
+        /**
+         * Obtengo el bloque de instrucciones desde memoria,
+         * ahora hay que cargarlos a la cache de instrucciones
+         */
+        Instruccion ins[]= simulacion.getBloqueMemoriaInstruccion(pc);
+        /**
+         * Falta setBloque para cache en simulacion?
+         */
+        int numeroBloque = this.simulacion.getNumeroBloque(pc);
+        int posicion = this.simulacion.getPosicionCacheN1(pc);
+        this.simulacion.setBloqueCacheInstruccionesN1(new BloqueInstrucciones(ins,numeroBloque,Estado.COMPARTIDO), posicion);
+
+        this.simulacion.desbloquear_BusInstruc_Memoria();
+
     }
 
     private void escogerHilo(){

@@ -78,7 +78,57 @@ public class Nucleo1 extends Nucleo{
 
     }
 
-    private void resolverFalloCacheDatos() {
+    private void resolverFalloCacheDatos(int pc) {
+        /**
+         * Recibe pc que es la direccion de memoria y cache
+         * Esto ya asume de que no existe lo que ocupo en mi cache por lo
+         * que solo hara las revisiones al otro cache y a memoria
+         */
+
+        /**
+         * Debo de poder obtener bus, mi posicion de cache y la posicion del otro cache
+         * Esto es porque N0 puede bloquear mi posicion
+         */
+        boolean bloqueado=false;
+        while (!bloqueado) {
+            if(!this.simulacion.intentar_pedirBusDatos_Memoria()
+                    && !this.simulacion.intentar_pedirPosicion_CacheDatosN1(pc)
+                    && !this.simulacion.intentar_pedirPosicion_CacheDatosN0(pc))
+            {
+                this.esperarTick(false);
+            }
+            else {
+                bloqueado=true;
+            }
+        }
+        /**
+         * Luego de obtenerlo debo de ir considerando los casos
+         * Si el otro cache lo tiene en COMPARTIDO entonces lo cargo a mi cache
+         * Si el otro cache lo tiene en MODIFICADO entonces lo bajo a memoria y luego lo cargo a mi cache, total 80 ticks
+         * Si el otro cache lo tiene en INVALIDO entonces lo traigo de memoria
+         * Caso default: No esta en la otra cache por lo que hay que traerlo desde memoria
+         */
+
+        switch (this.simulacion.getBloqueCacheDatos(pc, 0).getEstado().toString()){
+            case "COMPARTIDO":
+                break;
+            case "MODIFICADO":
+                break;
+            case "INVALIDO":
+                break;
+            default:
+                break;
+        }
+
+
+
+        int i=0;
+        while(i!=40){
+            this.esperarTick(false);
+            ++i;
+        }
+
+       // Instruccion ins[]= simulacion.getBloqueMemoriaInstruccion(pc);
 
     }
 
