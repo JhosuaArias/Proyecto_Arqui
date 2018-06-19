@@ -30,24 +30,24 @@ public class Nucleo implements Runnable {
                 daddi(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],ejecucion[3]);
                 break;
             case 32: //Dadd
-                dadd(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],hiloEjecucion.getRegistro(ejecucion[3]));
+                dadd(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),hiloEjecucion.getRegistro(ejecucion[2]),ejecucion[3]);
                 break;
             case 34: //Dsub
-                dsub(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],hiloEjecucion.getRegistro(ejecucion[3]));
+                dsub(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),hiloEjecucion.getRegistro(ejecucion[2]),ejecucion[3]);
                 break;
             case 12: //Dmul
-                dmul(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],hiloEjecucion.getRegistro(ejecucion[3]));
+                dmul(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),hiloEjecucion.getRegistro(ejecucion[2]),ejecucion[3]);
                 break;
             case 14: //Ddiv
-                ddiv(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[2],hiloEjecucion.getRegistro(ejecucion[3]));
+                ddiv(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),hiloEjecucion.getRegistro(ejecucion[2]),ejecucion[3]);
                 break;
             case 4: //BEQZ
                 //Listo
-                //beqz(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
+                beqz(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
                 break;
             case 5: //BNEZ
                 //Listo
-               // bnez(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
+                bnez(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
                 break;
             case 3: //Jal
                //jal(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]), hiloEjecucion.getPc());
@@ -85,23 +85,23 @@ public class Nucleo implements Runnable {
         }
 
     public void dadd(Hilo hiloEjecucion, int RF1, int RF2, int RD){
-        int op=RF1+RD;
-        hiloEjecucion.setRegistro(RF2,op);
+        int op=RF1+RF2;
+        hiloEjecucion.setRegistro(RD,op);
         }
 
     public void dsub(Hilo hiloEjecucion, int RF1, int RF2, int RD){
-        int op=RF1-RD;
-        hiloEjecucion.setRegistro(RF2,op);
+        int op=RF1-RF2;
+        hiloEjecucion.setRegistro(RD,op);
         }
 
     public void dmul(Hilo hiloEjecucion, int RF1, int RF2, int RD){
-        int op=RF1*RD;
-        hiloEjecucion.setRegistro(RF2,op);
+        int op=RF1*RF2;
+        hiloEjecucion.setRegistro(RD,op);
         }
 
     public void ddiv(Hilo hiloEjecucion, int RF1, int RF2, int RD){
-        int op=RF1/RD;
-        hiloEjecucion.setRegistro(RF2,op);
+        int op=RF1/RF2;
+        hiloEjecucion.setRegistro(RD,op);
     }
 
     public void beqz(Hilo hiloEjecucion, int RF, int Imm){
