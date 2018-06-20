@@ -1,9 +1,6 @@
 package MVC;
 
-import Caches.BloqueDatos;
-import Caches.BloqueInstrucciones;
-import Caches.CacheDatos;
-import Caches.CacheInstrucciones;
+import Caches.*;
 import Estructuras_Datos.Cola;
 import Estructuras_Datos.Hilo;
 import Estructuras_Datos.Instruccion;
@@ -323,6 +320,12 @@ public class Simulacion {
     }
 
 
+    public int getNumeroPalabra (int direccionMemoria)
+    {
+
+        return (direccionMemoria -  (BYTES_BLOQUE * getNumeroBloque(direccionMemoria))) /  PALABRAS_BLOQUE;
+    }
+
     public Instruccion[] getBloqueMemoriaInstruccion(int direccionMemoria) {
 
         int numeroBloque = getNumeroBloque(direccionMemoria);
@@ -336,7 +339,40 @@ public class Simulacion {
         return memoriaPrincipal.getBloqueDatos(numeroBloque);
     }
 
+    public void setBloqueCacheDatosN1(int []palabras, Estado estado, int direccionMemoria) {
 
+
+
+        /*Llenar el bloque a cargar*/
+
+        BloqueDatos bloqueNuevo= new BloqueDatos();
+
+        bloqueNuevo.setPalabra(palabras);
+        bloqueNuevo.setEtiqueta(getNumeroBloque(direccionMemoria));
+        bloqueNuevo.setEstado(estado);
+
+        /*Cargo el bloque en la cache*/
+        cacheDatosN1.setBloque(bloqueNuevo,getPosicionCacheN1(direccionMemoria));
+
+    }
+
+    public void setBloqueCacheDatosMemoria(BloqueDatos bloque,int numeroBloque) {
+
+        memoriaPrincipal.setBloque(bloque.getPalabra(),numeroBloque);
+
+    }
+
+    public void setEstadoN1(int posicion,Estado E) {
+
+       cacheDatosN1.setEstado(posicion,E);
+
+    }
+
+    public void setEstadoN0(int posicion,Estado E) {
+
+        cacheDatosN0.setEstado(posicion,E);
+
+    }
 
 
     public void setBloqueCacheInstruccionesN1(BloqueInstrucciones bloque, int posicion){
