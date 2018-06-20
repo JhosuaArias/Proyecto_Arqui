@@ -2,6 +2,8 @@ package Caches;
 
 import Estructuras_Datos.Instruccion;
 
+import java.util.Arrays;
+
 public class BloqueInstrucciones {
     private Instruccion[] palabra;
     private int etiqueta;
@@ -47,6 +49,11 @@ public class BloqueInstrucciones {
 
     public Instruccion getInstruccion(int posicion) {
         return this.palabra[posicion];
+    }
+
+    @Override
+    public String toString(){
+        return Arrays.toString(palabra) + " etq: " + etiqueta + " est: " + estado;
     }
 
 }

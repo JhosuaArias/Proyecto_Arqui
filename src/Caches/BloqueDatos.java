@@ -2,6 +2,8 @@ package Caches;
 
 import Estructuras_Datos.Instruccion;
 
+import java.util.Arrays;
+
 public class BloqueDatos {
     private int[] palabra;
     private int etiqueta;
@@ -39,4 +41,8 @@ public class BloqueDatos {
         this.estado = estado;
     }
 
+    @Override
+    public String toString(){
+        return Arrays.toString(palabra) + " etq: " + etiqueta + " est: " + estado;
+    }
 }

@@ -6,6 +6,7 @@ import Caches.Estado;
 import Estructuras_Datos.Hilo;
 import Estructuras_Datos.Instruccion;
 import MVC.Simulacion;
+import javafx.util.Pair;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -18,17 +19,18 @@ public class Nucleo1 extends Nucleo{
 
     private Hilo hilo;
 
+    private Pair<EstadoThread,Integer> estadoHilo;
+
     private Thread thread;
 
     public Nucleo1(Simulacion simulacion, int id){
         super(simulacion,id);
+        this.estadoHilo = new Pair<>(EstadoThread.EJECUTANDO,-1);
         this.thread = new Thread(this,"Thread 2");
         this.thread.start();
     }
 
-    public void setHilo() {
-        this.hilo = this.simulacion.pedirHiloCola();
-    }
+
 
     private void resolverFalloCacheInstrucciones(int pc) {
         /**
@@ -329,5 +331,21 @@ public class Nucleo1 extends Nucleo{
 
     }
 /*****************************************************/
+
+
+    /**Getters**/
+    public Pair<EstadoThread, Integer> getEstadoHilo() {
+        return estadoHilo;
+    }
+
+    public Hilo getHilo() {
+        return hilo;
+    }
+
+    /**Setter**/
+
+    public void setEstado(EstadoThread estado, int posicion){
+        this.estadoHilo = new Pair<>(estado,posicion);
+    }
 
 }

@@ -33,12 +33,9 @@ public class Simulacion {
 
     private ReentrantLock[] posicionesCacheDatosN1;
 
-    private ReentrantLock[] reservaPosicionesCacheDatosN0;
-    private ReentrantLock[] reservaPosicionesCacheIntruccionN0;
 
     private ReentrantLock busCacheDatos_Memoria;
     private ReentrantLock busCacheInstruc_Memoria;
-
     /**Simulación**/
     private  ArrayList<Hilo> hilos;
     private int numeroHilos;
@@ -167,15 +164,10 @@ public class Simulacion {
 
         this.posicionesCacheDatosN1 = new ReentrantLock[BLOQUES_CACHE_N1];
 
-        this.reservaPosicionesCacheDatosN0 = new ReentrantLock[BLOQUES_CACHE_N0];
-        this.reservaPosicionesCacheIntruccionN0 = new ReentrantLock[BLOQUES_CACHE_N0];
 
         for (int i = 0; i < BLOQUES_CACHE_N0; i++) {
             this.posicionesCacheDatosN0[i] = new ReentrantLock();
             this.posicionesCacheInstruccionN0[i] = new ReentrantLock();
-
-            this.reservaPosicionesCacheDatosN0[i] = new ReentrantLock();
-            this.reservaPosicionesCacheIntruccionN0[i] = new ReentrantLock();
         }
 
         for (int i = 0; i < BLOQUES_CACHE_N1; i++) {
@@ -206,6 +198,14 @@ public class Simulacion {
         }
     }
 
+    public void esperarSegundaBarrera(){
+        try {
+            this.finalBarrier.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**Intenta bloquear locks**/
 
     public boolean intentar_pedirBusInstruc_Memoria() {
@@ -228,13 +228,6 @@ public class Simulacion {
         return this.posicionesCacheDatosN1[posicion].tryLock();
     }
 
-    public boolean intentar_reservarPosicion_CacheDatosN0(int posicion) {
-        return this.reservaPosicionesCacheDatosN0[posicion].tryLock();
-    }
-
-    public boolean intentar_reservarPosicion_CacheInstrucN0(int posicion) {
-        return this.reservaPosicionesCacheIntruccionN0[posicion].tryLock();
-    }
 
     /**Desbloquea locks**/
 
@@ -258,13 +251,6 @@ public class Simulacion {
         this.posicionesCacheDatosN1[posicion].unlock();
     }
 
-    public void desbloquear_ReservaPosicion_CacheDatosN0(int posicion)  {
-        this.reservaPosicionesCacheDatosN0[posicion].unlock();
-    }
-
-    public void desbloquear_ReservaPosicion_CacheInstrucN0(int posicion) {
-        this.reservaPosicionesCacheIntruccionN0[posicion].unlock();
-    }
 
     /*Mapeo de bloques y direcciones de memoria*/
 
@@ -345,6 +331,119 @@ public class Simulacion {
 
     public void setInactivoHilo(int posicion) {
         this.hilosActivos[posicion] = false;
+    }
+
+    /**Getters**/
+    public ArrayList<Hilo> getHilos() {
+        return hilos;
+    }
+
+    public void setHilos(ArrayList<Hilo> hilos) {
+        this.hilos = hilos;
+    }
+
+    public int getNumeroHilos() {
+        return numeroHilos;
+    }
+
+    public void setNumeroHilos(int numeroHilos) {
+        this.numeroHilos = numeroHilos;
+    }
+
+    public boolean isSlow() {
+        return isSlow;
+    }
+
+    public void setSlow(boolean slow) {
+        isSlow = slow;
+    }
+
+    public int getQuantum() {
+        return quantum;
+    }
+
+    public void setQuantum(int quantum) {
+        this.quantum = quantum;
+    }
+
+    public boolean[] getHilosActivos() {
+        return hilosActivos;
+    }
+
+    public void setHilosActivos(boolean[] hilosActivos) {
+        this.hilosActivos = hilosActivos;
+    }
+
+    public int getTicks() {
+        return ticks;
+    }
+
+    public void setTicks(int ticks) {
+        this.ticks = ticks;
+    }
+
+    public Cola getCola() {
+        return cola;
+    }
+
+    public void setCola(Cola cola) {
+        this.cola = cola;
+    }
+
+    public MemoriaPrincipal getMemoriaPrincipal() {
+        return memoriaPrincipal;
+    }
+
+    public void setMemoriaPrincipal(MemoriaPrincipal memoriaPrincipal) {
+        this.memoriaPrincipal = memoriaPrincipal;
+    }
+
+    public CacheDatos getCacheDatosN0() {
+        return cacheDatosN0;
+    }
+
+    public void setCacheDatosN0(CacheDatos cacheDatosN0) {
+        this.cacheDatosN0 = cacheDatosN0;
+    }
+
+    public CacheInstrucciones getCacheInstruccionesN0() {
+        return cacheInstruccionesN0;
+    }
+
+    public void setCacheInstruccionesN0(CacheInstrucciones cacheInstruccionesN0) {
+        this.cacheInstruccionesN0 = cacheInstruccionesN0;
+    }
+
+    public CacheDatos getCacheDatosN1() {
+        return cacheDatosN1;
+    }
+
+    public void setCacheDatosN1(CacheDatos cacheDatosN1) {
+        this.cacheDatosN1 = cacheDatosN1;
+    }
+
+    public CacheInstrucciones getCacheInstruccionesN1() {
+        return cacheInstruccionesN1;
+    }
+
+    public void setCacheInstruccionesN1(CacheInstrucciones cacheInstruccionesN1) {
+        this.cacheInstruccionesN1 = cacheInstruccionesN1;
+    }
+
+    public Nucleo0 getNucleo0() {
+        return nucleo0;
+    }
+
+    public void setNucleo0(Nucleo0 nucleo0) {
+        this.nucleo0 = nucleo0;
+    }
+
+    public Nucleo1 getNucleo1() {
+        return nucleo1;
+    }
+
+    public void setNucleo1(Nucleo1 nucleo1) {
+        this.nucleo1 = nucleo1;
     }
 
 
