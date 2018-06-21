@@ -33,6 +33,15 @@ public class CacheDatos {
 
     }
 
+    @Override
+    public String toString(){
+        String hilera = "";
+
+        for (int i = 0; i < bloques.length ; i++) {
+            hilera+= i +": " + bloques[i].toString();
+        }
+        return hilera;
+    }
 
 
 }

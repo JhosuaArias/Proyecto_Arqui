@@ -1,5 +1,7 @@
 package Estructuras_Datos;
 
+import java.util.Arrays;
+
 public class Hilo {
     private String nombre;
     private int id;
@@ -92,5 +94,14 @@ public class Hilo {
         this.quantumRestante = quantumRestante;
     }
 
+    @Override
+    public String toString(){
+        String hilera = "*Estado del Hilo " + this.id + "\n";
+        hilera += "*PC: " + this.pc + "\n";
+        hilera += "*IR: " + this.ir + "\n";
+        hilera += "*Quantum Restante: " + this.quantumRestante + "\n";
+        hilera += "*Registros: " + Arrays.toString(this.registros) + "\n";
+        return hilera;
+    }
 
 }

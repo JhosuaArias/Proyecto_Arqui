@@ -143,7 +143,7 @@ public class Nucleo0 extends Nucleo{
         boolean bloqueado=false;
 
         while (!bloqueado) {
-            if(!this.simulacion.intentar_pedirBusInstruc_Memoria() && !this.simulacion.intentar_reservarPosicion_CacheInstrucN0(pc)){
+            if(!this.simulacion.intentar_pedirBusInstruc_Memoria()){
                 this.esperarTick(false);
             }
             else {
@@ -363,6 +363,24 @@ public class Nucleo0 extends Nucleo{
 
     }
     /*****************************************************/
+
+    /**Getters**/
+    public Hilo getHiloThread0() {
+        return hiloThread0;
+    }
+
+    public Hilo getHiloThread1() {
+        return hiloThread1;
+    }
+
+    public Pair<EstadoThread, Integer> getEstadoThread0() {
+        return estadoThread0;
+    }
+
+    public Pair<EstadoThread, Integer> getEstadoThread1() {
+        return estadoThread1;
+    }
+
 
 }
 

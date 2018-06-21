@@ -12,4 +12,12 @@ public class Instruccion {
         return palabra;
     }
 
+    @Override
+    public  String toString(){
+        String hilera = "";
+        for (int i: palabra) {
+            hilera+= i;
+        }
+        return hilera;
+    }
 }
