@@ -201,6 +201,7 @@ public class Nucleo1 extends Nucleo{
         super.esperarTick(restarQuantum);
         if(restarQuantum)
             this.hilo.restarQuantum();
+        this.simulacion.esperarSegundaBarrera();
     }
 
     @Override

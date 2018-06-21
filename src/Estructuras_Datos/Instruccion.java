@@ -16,7 +16,7 @@ public class Instruccion {
     public  String toString(){
         String hilera = "";
         for (int i: palabra) {
-            hilera+= i;
+            hilera+= i + " ";
         }
         return hilera;
     }

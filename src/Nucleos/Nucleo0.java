@@ -127,8 +127,6 @@ public class Nucleo0 extends Nucleo{
 
     private void resolverFalloCacheInstrucciones(int pc) {
 
-        this.setEstado(EstadoThread.FALLO_CACHE_DATOS, pc,0);
-        this.setEstado(EstadoThread.EJECUTANDO, pc,1);
 
         /**
          * Recibe pc que contiene la direccion de memoria
@@ -220,11 +218,12 @@ public class Nucleo0 extends Nucleo{
         super.run();
 
         while (!this.simulacion.isColaNull()){
-//            if(this.getEstado() == EstadoThread.EJECUTANDO) {
+//            if(this.getEstado().getKey() == EstadoThread.EJECUTANDO) {
 //                this.escogerHilo();
 //                this.iteracion();
 //            }
             this.esperarTick(false);
+            this.simulacion.esperarSegundaBarrera();
         }
         System.err.println("Terminé: " + Thread.currentThread().getName());
     }

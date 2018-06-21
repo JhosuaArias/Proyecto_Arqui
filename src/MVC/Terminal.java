@@ -121,5 +121,14 @@ public class Terminal {
         }
     }
 
+    public void esperarUsuario(){
+        System.out.println("Presione Enter para continuar:");
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
