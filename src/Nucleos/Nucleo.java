@@ -59,17 +59,17 @@ public class Nucleo implements Runnable {
                 // TODO
                 //this.lw(this.id, registro, dir);
                 if(n0 != null){
-                    //n0.lw(1000);
+                    //n0.lw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }else{
-                    //n1.lw(hiloEjecucion,ejecucion[1],);
+                   // n1.lw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }
                 break;
             case 43: //SW
                 //TODO
                 if(n0 != null){
-                    //n0.sw(1000);
+                    //n0.sw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }else{
-                    //n1.sw(1000);
+                    //n1.sw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }
                 break;
             case 63: //Fin

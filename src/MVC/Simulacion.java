@@ -101,9 +101,10 @@ public class Simulacion {
 
 
         try {
+            Thread.sleep(1000);
             this.terminal.imprimirEstadoFinal(this);
             System.out.println("Finalizando Simulacion...");
-            Thread.sleep(1000);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
