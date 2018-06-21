@@ -117,7 +117,7 @@ public class Terminal {
         ArrayList<Hilo> hilos = simulacion.getHilos();
 
         for (Hilo hilo: hilos) {
-            System.out.print(hilo.toString());
+            System.out.print(hilo.toString()+"\n");
         }
     }
 

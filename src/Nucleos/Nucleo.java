@@ -50,10 +50,10 @@ public class Nucleo implements Runnable {
                 bnez(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
                 break;
             case 3: //Jal
-               //jal(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]), hiloEjecucion.getPc());
+               jal(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]), hiloEjecucion.getPc());
                 break;
             case 2: //JR
-                //jr(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]));
+                jr(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]));
                 break;
             case 35: //LW
                 // TODO
@@ -61,7 +61,7 @@ public class Nucleo implements Runnable {
                 if(n0 != null){
                     //n0.lw(1000);
                 }else{
-                    //n1.lw(1000);
+                    //n1.lw(hiloEjecucion,ejecucion[1],);
                 }
                 break;
             case 43: //SW

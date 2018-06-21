@@ -76,7 +76,7 @@ public class Nucleo0 extends Nucleo{
     }
 
     private void iteracionHilo(Hilo hilo){
-        //TODO CAMBIAR.... PONER MÁS CONDICIONES DE ESPERA
+
         boolean mismoHilo = true;
 
         while (mismoHilo) {
@@ -111,7 +111,7 @@ public class Nucleo0 extends Nucleo{
                 /**Esperar un tick**/
                 this.esperarTick(false);
             } else if (hilo.getQuantumRestante() == 1) {
-                this.simulacion.devolverHiloCola(hilo);
+                this.devolverHilo();
                 hilo.reiniciarQuantum();
                 hilo = null;
                 mismoHilo = false;
@@ -164,32 +164,21 @@ public class Nucleo0 extends Nucleo{
          * Falta setBloque para cache en simulacion?
          */
         int numeroBloque = this.simulacion.getNumeroBloque(pc);
-        int posicion = this.simulacion.getPosicionCacheN1(pc);
-        this.simulacion.setBloqueCacheInstruccionesN1(new BloqueInstrucciones(ins,numeroBloque,Estado.COMPARTIDO), posicion);
+        int posicion = this.simulacion.getPosicionCacheN0(pc);
+        this.simulacion.setBloqueCacheInstruccionesN0(new BloqueInstrucciones(ins,numeroBloque,Estado.COMPARTIDO), posicion);
 
         this.simulacion.desbloquear_BusInstruc_Memoria();
 
     }
 
-    private void escogerHilo(){
-        boolean repetir = true;
+    private void escogerHilo() {
 
-        while (repetir) {
-            if(Thread.currentThread().getId() == thread0.getId()) {
-                if((this.hiloThread0 = this.simulacion.pedirHiloCola()) != null){
-                    repetir = false;
-                } else {
-                  this.esperarTick(false);
-                }
-            }else if(Thread.currentThread().getId() == thread1.getId()){
-                if((this.hiloThread1 = this.simulacion.pedirHiloCola()) != null) {
-                    repetir = false;
-                } else {
-                    this.esperarTick(false);
-                }
-            }else {
-                System.err.println("No debería pasar");
-            }
+        if (Thread.currentThread().getId() == thread0.getId()) {
+            this.hiloThread0 = this.simulacion.pedirHiloCola();
+        } else if (Thread.currentThread().getId() == thread1.getId()) {
+            this.hiloThread1 = this.simulacion.pedirHiloCola();
+        } else {
+            System.err.println("No debería pasar");
         }
     }
 
@@ -205,12 +194,24 @@ public class Nucleo0 extends Nucleo{
         }
     }
 
+    private Hilo getHiloThread() {
+        if(Thread.currentThread().getId() == thread0.getId()) {
+           return hiloThread0;
+        }else if(Thread.currentThread().getId() == thread1.getId()){
+            return hiloThread0;
+        }else {
+            System.err.println("No debería pasar");
+        }
+        return null;
+    }
+
 
     @Override
     public void esperarTick(boolean restarQuantum){
         super.esperarTick(restarQuantum);
         if(restarQuantum)
             this.restarQuantum();
+        this.simulacion.esperarSegundaBarrera();
     }
 
     @Override
@@ -218,12 +219,17 @@ public class Nucleo0 extends Nucleo{
         super.run();
 
         while (!this.simulacion.isColaNull()){
-//            if(this.getEstado().getKey() == EstadoThread.EJECUTANDO) {
-//                this.escogerHilo();
-//                this.iteracion();
-//            }
-            this.esperarTick(false);
-            this.simulacion.esperarSegundaBarrera();
+            if(this.getEstado().getKey() == EstadoThread.EJECUTANDO) {
+                this.escogerHilo();
+                if(this.getHiloThread() == null){
+                    this.esperarTick(false);
+                } else {
+                    this.iteracion();
+                }
+            }else {
+                this.esperarTick(false);
+            }
+
         }
         System.err.println("Terminé: " + Thread.currentThread().getName());
     }

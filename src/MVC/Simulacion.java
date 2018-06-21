@@ -370,6 +370,10 @@ public class Simulacion {
      cacheInstruccionesN1.setBloque(bloque, posicion);
     }
 
+    public void setBloqueCacheInstruccionesN0(BloqueInstrucciones bloqueInstrucciones, int posicion) {
+        cacheInstruccionesN0.setBloque(bloqueInstrucciones, posicion);
+    }
+
     public void setInactivoHilo(int posicion) {
         this.hilosActivos[posicion] = false;
     }

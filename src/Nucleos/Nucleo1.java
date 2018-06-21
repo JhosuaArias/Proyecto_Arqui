@@ -33,6 +33,7 @@ public class Nucleo1 extends Nucleo{
 
 
     private void resolverFalloCacheInstrucciones(int pc) {
+        this.setEstado(EstadoThread.FALLO_CACHE_INSTRUCCIONES,this.simulacion.getPosicionCacheN1(pc));
         /**
          * Recibe pc que contiene la direccion de memoria
          * Tiene que ir a buscar la instruccion a memoria
@@ -82,7 +83,7 @@ public class Nucleo1 extends Nucleo{
         this.simulacion.setBloqueCacheInstruccionesN1(new BloqueInstrucciones(ins,numeroBloque,COMPARTIDO), posicion);
 
         this.simulacion.desbloquear_BusInstruc_Memoria();
-
+        this.setEstado(EstadoThread.EJECUTANDO,-1);
     }
 
     private void resolverFalloCacheDatos(Hilo hiloEjecucion, int numRegistro, int direccionMemoria, TipoDeFallo tipo){
