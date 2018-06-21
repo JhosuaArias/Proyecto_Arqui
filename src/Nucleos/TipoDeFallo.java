@@ -1,0 +1,7 @@
+package Nucleos;
+
+public enum TipoDeFallo {
+    LW_NOESMIETIEQUETAYMODIFICADO,
+    LW_CARGARDESDECACHE,
+    LW_CARGARDESDEMEMORIA
+}

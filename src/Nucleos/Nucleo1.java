@@ -85,57 +85,64 @@ public class Nucleo1 extends Nucleo{
 
     }
 
-    private void resolverFalloCacheDatos(int pc) {
-        /**
-         * Recibe pc que es la direccion de memoria y cache
-         * Esto ya asume de que no existe lo que ocupo en mi cache por lo
-         * que solo hara las revisiones al otro cache y a memoria
-         */
+    private void resolverFalloCacheDatos(Hilo hiloEjecucion, int numRegistro, int direccionMemoria, TipoDeFallo tipo){
 
-        /**
-         * Debo de poder obtener bus, mi posicion de cache y la posicion del otro cache
-         * Esto es porque N0 puede bloquear mi posicion
-         */
-        boolean bloqueado=false;
-        while (!bloqueado) {
-            if(!this.simulacion.intentar_pedirBusDatos_Memoria()
-                    && !this.simulacion.intentar_pedirPosicion_CacheDatosN1(pc)
-                    && !this.simulacion.intentar_pedirPosicion_CacheDatosN0(pc))
-            {
-                this.esperarTick(false);
-            }
-            else {
-                bloqueado=true;
-            }
+        /*Ya tengo bloqueado todos los recursos*/
+
+        switch (tipo)
+        {
+            case LW_NOESMIETIEQUETAYMODIFICADO:
+
+                  /*Espera 40 tics*/
+                for(int i=0; i<40;++i)
+                {esperarTick(false);}
+
+                /*Guarda el bloque victima en memoria e invalida */
+                simulacion.setBloqueCacheDatosMemoria(simulacion.getBloqueCacheDatosN1(direccionMemoria),simulacion.getNumeroBloque(direccionMemoria));
+                simulacion.setEstadoN1(simulacion.getPosicionCacheN1(direccionMemoria),INVALIDO);
+
+                break;
+
+            case LW_CARGARDESDEMEMORIA:
+
+                /*Libero la otra posicion*/
+                simulacion.desbloquear_Posicion_CacheDatosN0(simulacion.getPosicionCacheN0(direccionMemoria));
+
+                /*Espera 40 tics*/
+                for(int i=0; i<40;++i)
+                {esperarTick(false);}
+
+                /*Carga de memoria al cache y lo pone en compartido*/
+                simulacion.setBloqueCacheDatosN1(simulacion.getBloqueMemoriaDatos(direccionMemoria),Estado.COMPARTIDO,direccionMemoria);
+
+                 /*Libero el bus*/
+                simulacion.desbloquear_BusDatos_Memoria();
+
+                break;
+
+            case LW_CARGARDESDECACHE:
+
+                /*Espera 40 tics*/
+                for(int i=0; i<40;++i)
+                {esperarTick(false);}
+
+                /*Guarda el bloque victima en memoria y lo pone en compartido */
+                simulacion.setBloqueCacheDatosMemoria(simulacion.getBloqueCacheDatosN1(direccionMemoria),simulacion.getNumeroBloque(direccionMemoria));
+                simulacion.setEstadoN1(simulacion.getPosicionCacheN1(direccionMemoria),COMPARTIDO);
+
+                 /*Pone en compartido el del otro cache*/
+                simulacion.setEstadoN0(simulacion.getPosicionCacheN0(direccionMemoria),COMPARTIDO);
+
+                /*Carga de memoria al cache y lo pone en compartido*/
+                simulacion.setBloqueCacheDatosN1(simulacion.getBloqueCacheDatosN0(direccionMemoria).getPalabra(),Estado.COMPARTIDO,direccionMemoria);
+
+                 /*Libero  la otra posicion y el bus*/
+                simulacion.desbloquear_Posicion_CacheDatosN0(simulacion.getPosicionCacheN0(direccionMemoria));
+                simulacion.desbloquear_BusDatos_Memoria();
+
+                break;
         }
-        /**
-         * Luego de obtenerlo debo de ir considerando los casos
-         * Si el otro cache lo tiene en COMPARTIDO entonces lo cargo a mi cache
-         * Si el otro cache lo tiene en MODIFICADO entonces lo bajo a memoria y luego lo cargo a mi cache, total 80 ticks
-         * Si el otro cache lo tiene en INVALIDO entonces lo traigo de memoria
-         * Caso default: No esta en la otra cache por lo que hay que traerlo desde memoria
-         */
-        //TODO COMPLETAR
-        switch (this.simulacion.getBloqueCacheDatosN1(pc).getEstado()){
-            case COMPARTIDO:
-                break;
-            case MODIFICADO:
-                break;
-            case INVALIDO:
-                break;
-            default:
-                break;
-        }
 
-
-
-        int i=0;
-        while(i!=40){
-            this.esperarTick(false);
-            ++i;
-        }
-
-       // Instruccion ins[]= simulacion.getBloqueMemoriaInstruccion(pc);
 
     }
 
@@ -211,7 +218,7 @@ public class Nucleo1 extends Nucleo{
     }
 
     /***********************/
-    public void lw(int direccionMemoria){
+    public void lw(Hilo hiloEjecucion, int numRegistro, int direccionMemoria){
 
         boolean noTermine=true;
 
@@ -235,11 +242,15 @@ public class Nucleo1 extends Nucleo{
                     {
                         simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
                         esperarTick(false);
-                    } else //Pude bloquear el bus
+
+                    }
+
+                    else //Pude bloquear el bus
                     {
                         if (bloqueCacheDatos.getEstado()== Estado.MODIFICADO) //Es otra etiqueta y esta modificado
                         {
-                            /*Esperar 40 tics, cargar el bloque victima a memoria e invalidar*/
+                            resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.LW_NOESMIETIEQUETAYMODIFICADO);
+
                         }
 
                         int posicionOtroExtremo = simulacion.getPosicionCacheN1(direccionMemoria);
@@ -248,12 +259,18 @@ public class Nucleo1 extends Nucleo{
                         {
                             simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
                             simulacion.desbloquear_BusDatos_Memoria();
-                            // esperarTick();
+                            esperarTick(false);
                         }
                         else //pude bloquear el otro indice
 
                         {
-                            lwVerificarOtroCache_vengodeN1(direccionMemoria);
+                            /*Soluciono el fallo*/
+                            lw_VerificarSiEstaEnN0(hiloEjecucion,numRegistro,direccionMemoria);
+
+                            /*Cargo la palabra*/
+                            cargarPalabraN1(hiloEjecucion,numRegistro,direccionMemoria);
+
+                            /*Termine LW*/
                             noTermine=false;
                         }
 
@@ -268,10 +285,10 @@ public class Nucleo1 extends Nucleo{
                         if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
                         {
                             simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
-                            //esperarTick();
+                            esperarTick(false);
                         }
 
-                        else
+                        else //Logre bloquear el bus
                         {
                             int posicionOtroExtremo = simulacion.getPosicionCacheN0(direccionMemoria);
 
@@ -279,11 +296,17 @@ public class Nucleo1 extends Nucleo{
                             {
                                 simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
                                 simulacion.desbloquear_BusDatos_Memoria();
-                                // esperarTick();
+                                 esperarTick(false);
                             }
                             else //Pude bloquear el otro indice
                             {
-                                lwVerificarOtroCache_vengodeN1(direccionMemoria);
+                                /*Soluciono el fallo*/
+                                lw_VerificarSiEstaEnN0(hiloEjecucion,numRegistro,direccionMemoria);
+
+                                /*Cargo la palabra*/
+                                cargarPalabraN1(hiloEjecucion,numRegistro,direccionMemoria);
+
+                                /*Termine LW*/
                                 noTermine=false;
                             }
 
@@ -292,13 +315,11 @@ public class Nucleo1 extends Nucleo{
 
                     }
 
-                    else //La etiqueta no esta invalida
+                    else //La etiqueta esta compartida o modificada, caso trivial
                     {
-                        /*Averiguo la palabra, cargo a registro, desbloqueo la posicion*/
-
-                        simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
-
-                        /*Indicar que no se vuelva a meter en el while*/
+                        /*Cargo la palabra*/
+                        cargarPalabraN1(hiloEjecucion,numRegistro,direccionMemoria);
+                        /*Termine LW*/
                         noTermine=false;
                     }
                 }
@@ -306,27 +327,50 @@ public class Nucleo1 extends Nucleo{
             }
 
         }
+
+        /*Finalice*/
+        esperarTick(true);
     }
 
     /*****************************/
 
-    public  void lwVerificarOtroCache_vengodeN1(int direccionMemoria)
+    public  void lw_VerificarSiEstaEnN0(Hilo hiloEjecucion,int numRegistro,int direccionMemoria)
     {
         /*vengo de bloquear el indice del otro cache*/
 
         BloqueDatos bloqueCacheDatosOtroExtremo = simulacion.getBloqueCacheDatosN0(direccionMemoria);
         if (bloqueCacheDatosOtroExtremo.getEtiqueta()== simulacion.getNumeroBloque(direccionMemoria) && bloqueCacheDatosOtroExtremo.getEstado() == Estado.MODIFICADO) //Corresponde a la etiqueta y esta modificado
         {
-            /*Diagrama en morado*/
+            resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.LW_CARGARDESDECACHE);
         }
         else //No corresponde la etiqueta o no esta modificado
         {
-            /*Diagrama en anaranjado*/
+            resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.LW_CARGARDESDEMEMORIA);
         }
+
+
+
+    }
+
+    /*****************************/
+
+    public void cargarPalabraN1(Hilo hiloEjecucion, int numRegistro, int direccionMemoria)
+    {
+
+        /*Averiguo la palabra, cargo a registro, desbloqueo la posicion*/
+
+        int palabra=simulacion.getNumeroPalabra(direccionMemoria);
+
+        /*Cargar la palabra al registro*/
+        hiloEjecucion.setRegistro(numRegistro,palabra);
+
+        /*Desbloquear la posicion*/
+        simulacion.desbloquear_Posicion_CacheDatosN1(simulacion.getPosicionCacheN1(direccionMemoria));
 
     }
 
     /*******************************/
+
     public void sw() {
 
     }
