@@ -134,7 +134,7 @@ public class Nucleo1 extends Nucleo{
                 simulacion.setEstadoN0(simulacion.getPosicionCacheN0(direccionMemoria),COMPARTIDO);
 
                 /*Carga de memoria al cache y lo pone en compartido*/
-                simulacion.setBloqueCacheDatosN1(simulacion.getBloqueCacheDatosN0(direccionMemoria).getPalabra(),Estado.COMPARTIDO,direccionMemoria);
+                simulacion.setBloqueCacheDatosN1(simulacion.getBloqueMemoriaDatos(direccionMemoria),Estado.COMPARTIDO,direccionMemoria);
 
                  /*Libero  la otra posicion y el bus*/
                 simulacion.desbloquear_Posicion_CacheDatosN0(simulacion.getPosicionCacheN0(direccionMemoria));
