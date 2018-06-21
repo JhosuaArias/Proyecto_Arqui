@@ -85,7 +85,7 @@ public class Nucleo1 extends Nucleo{
 
     }
 
-    private void resolverFalloCacheDatos(Hilo hiloEjecucion, int numRegistro, int direccionMemoria, TipoDeFallo tipo){
+    private void lw_resolverFalloCacheDatos(Hilo hiloEjecucion, int numRegistro, int direccionMemoria, TipoDeFallo tipo){
 
         /*Ya tengo bloqueado todos los recursos*/
 
@@ -139,6 +139,34 @@ public class Nucleo1 extends Nucleo{
                  /*Libero  la otra posicion y el bus*/
                 simulacion.desbloquear_Posicion_CacheDatosN0(simulacion.getPosicionCacheN0(direccionMemoria));
                 simulacion.desbloquear_BusDatos_Memoria();
+
+                break;
+        }
+
+
+    }
+
+
+    private void sw_resolverFalloCacheDatos(Hilo hiloEjecucion, int numRegistro, int direccionMemoria, TipoDeFallo tipo){
+
+        /*Ya tengo bloqueado todos los recursos*/
+
+        switch (tipo)
+        {
+            case SW_NOESMIETIEQUETAYMODIFICADO:
+
+                break;
+
+            case SW_CARGARDESDEMEMORIA:
+
+
+                break;
+
+            case SW_CARGARDESDECACHE:
+
+                break;
+
+            case SW_ESTOYCOMPARTIDO:
 
                 break;
         }
@@ -249,7 +277,7 @@ public class Nucleo1 extends Nucleo{
                     {
                         if (bloqueCacheDatos.getEstado()== Estado.MODIFICADO) //Es otra etiqueta y esta modificado
                         {
-                            resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.LW_NOESMIETIEQUETAYMODIFICADO);
+                            lw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.LW_NOESMIETIEQUETAYMODIFICADO);
 
                         }
 
@@ -296,7 +324,7 @@ public class Nucleo1 extends Nucleo{
                             {
                                 simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
                                 simulacion.desbloquear_BusDatos_Memoria();
-                                 esperarTick(false);
+                                esperarTick(false);
                             }
                             else //Pude bloquear el otro indice
                             {
@@ -341,11 +369,11 @@ public class Nucleo1 extends Nucleo{
         BloqueDatos bloqueCacheDatosOtroExtremo = simulacion.getBloqueCacheDatosN0(direccionMemoria);
         if (bloqueCacheDatosOtroExtremo.getEtiqueta()== simulacion.getNumeroBloque(direccionMemoria) && bloqueCacheDatosOtroExtremo.getEstado() == Estado.MODIFICADO) //Corresponde a la etiqueta y esta modificado
         {
-            resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.LW_CARGARDESDECACHE);
+            lw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.LW_CARGARDESDECACHE);
         }
         else //No corresponde la etiqueta o no esta modificado
         {
-            resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.LW_CARGARDESDEMEMORIA);
+            lw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.LW_CARGARDESDEMEMORIA);
         }
 
 
@@ -369,11 +397,242 @@ public class Nucleo1 extends Nucleo{
 
     }
 
-    /*******************************/
+    /*********** SW *********/
 
-    public void sw() {
+
+    public void sw(Hilo hiloEjecucion, int numRegistro, int direccionMemoria){
+
+        boolean noTermine=true;
+
+        while (noTermine)
+        {
+
+            int posicion = simulacion.getPosicionCacheN1(direccionMemoria); //posicion en el cache
+
+            if(!(simulacion.intentar_pedirPosicion_CacheDatosN1(posicion))) //No bloquee el indice, vuelve a intentar
+            {
+                esperarTick(false);
+            }
+
+            else //Logre bloquear el indice, sigo
+            {
+                BloqueDatos bloqueCacheDatos= simulacion.getBloqueCacheDatosN1(direccionMemoria); //Obtengo el bloque del cache
+
+                if (bloqueCacheDatos.getEtiqueta()!=simulacion.getNumeroBloque(direccionMemoria)) //La etiqueta no corresponde al bloque
+                {
+                    if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
+                    {
+                        simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                        esperarTick(false);
+
+                    }
+
+                    else //Pude bloquear el bus
+                    {
+                        if (bloqueCacheDatos.getEstado()== Estado.MODIFICADO) //Es otra etiqueta y esta modificado
+                        {
+                            sw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.SW_NOESMIETIEQUETAYMODIFICADO);
+
+                        }
+
+                        int posicionOtroExtremo = simulacion.getPosicionCacheN1(direccionMemoria);
+
+                        if (!(simulacion.intentar_pedirPosicion_CacheDatosN1(posicionOtroExtremo))) //No pude bloquear el otro indice
+                        {
+                            simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                            simulacion.desbloquear_BusDatos_Memoria();
+                            esperarTick(false);
+                        }
+                        else //pude bloquear el otro indice
+
+                        {
+                            /*Soluciono el fallo*/
+                            sw_VerificarSiEstaEnN0(hiloEjecucion,numRegistro,direccionMemoria);
+
+                            /*Cargo la palabra*/
+                            guardarPalabraN1(hiloEjecucion,numRegistro,direccionMemoria);
+
+                            /*Termine SW*/
+                            noTermine=false;
+                        }
+
+                    }
+
+
+                }
+                else //La etiqueta corresponde al bloque
+                {
+                    if(bloqueCacheDatos.getEstado()== Estado.INVALIDO)  //La etiqueta esta invalida
+                    {
+                        if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
+                        {
+                            simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                            esperarTick(false);
+                        }
+
+                        else //Logre bloquear el bus
+                        {
+                            int posicionOtroExtremo = simulacion.getPosicionCacheN0(direccionMemoria);
+
+                            if (!(simulacion.intentar_pedirPosicion_CacheDatosN0(posicionOtroExtremo))) //No pude bloquear el otro indice
+                            {
+                                simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                                simulacion.desbloquear_BusDatos_Memoria();
+                                esperarTick(false);
+                            }
+                            else //Pude bloquear el otro indice
+                            {
+                                /*Soluciono el fallo*/
+                                sw_VerificarSiEstaEnN0(hiloEjecucion,numRegistro,direccionMemoria);
+
+                                /*Cargo la palabra*/
+                                guardarPalabraN1(hiloEjecucion,numRegistro,direccionMemoria);
+
+                                /*Termine SW*/
+                                noTermine=false;
+                            }
+
+                        }
+
+
+                    }
+
+                    else { //La etiqueta no esta invalida
+
+                        if (bloqueCacheDatos.getEstado()== Estado.COMPARTIDO) //La etiqueta esa compartida
+                        {
+                            /*FALLO DE CACHE*/
+
+                            if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
+                            {
+                                simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                                esperarTick(false);
+                            }
+
+                            else //Logre bloquear el bus
+                            {
+
+                                int posicionOtroExtremo = simulacion.getPosicionCacheN1(direccionMemoria);
+
+                                if (!(simulacion.intentar_pedirPosicion_CacheDatosN1(posicionOtroExtremo))) //No pude bloquear el otro indice
+                                {
+                                    simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
+                                    simulacion.desbloquear_BusDatos_Memoria();
+                                    esperarTick(false);
+                                }
+                                else //pude bloquear el otro indice
+
+                                {
+                                    sw_estoyEnCompartidoN1(hiloEjecucion, numRegistro, direccionMemoria);
+
+                                    /*Cargo la palabra*/
+                                    guardarPalabraN1(hiloEjecucion,numRegistro,direccionMemoria);
+
+                                    /*Termine SW*/
+                                    noTermine=false;
+                                }
+                            }
+
+                        }
+
+                        else //La etiqueta esta modificada, caso trivial
+                        {
+                        /*Cargo la palabra*/
+                            guardarPalabraN1(hiloEjecucion, numRegistro, direccionMemoria);
+                        /*Termine SW*/
+                            noTermine = false;
+                        }
+                    }
+                }
+
+            }//Fin del while
+
+        }
+
+        /*Finalice*/
+        esperarTick(true);
+    }
+
+
+
+    /*******************************************/
+
+
+    public  void sw_VerificarSiEstaEnN0(Hilo hiloEjecucion,int numRegistro,int direccionMemoria)
+    {
+        /*vengo de bloquear el indice del otro cache*/
+
+        BloqueDatos bloqueCacheDatosOtroExtremo = simulacion.getBloqueCacheDatosN0(direccionMemoria);
+
+        if (bloqueCacheDatosOtroExtremo.getEtiqueta()== simulacion.getNumeroBloque(direccionMemoria)) //La etiqueta corresponde al bloque
+        {
+
+            switch (bloqueCacheDatosOtroExtremo.getEstado())
+            {
+                case INVALIDO:
+                    sw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.SW_CARGARDESDEMEMORIA);
+                    break;
+
+                case COMPARTIDO:
+
+                    /*HAY QUE INVALIDAR EN EL OTRO CACHE ANTES DE HACER LO MISMO*/
+                    simulacion.setEstadoN0(simulacion.getPosicionCacheN0(direccionMemoria), Estado.INVALIDO);
+
+                    /*AHORA SI CARGO DE MEMORIA*/
+                    sw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.SW_CARGARDESDEMEMORIA);
+                    break;
+
+                case MODIFICADO:
+                    sw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.SW_CARGARDESDECACHE);
+                    break;
+            }
+        }
+        else //La etiqueta no corresponde al bloque
+        {
+            sw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.SW_CARGARDESDEMEMORIA);
+        }
+
+
 
     }
+
+    /*****************************/
+
+    public void sw_estoyEnCompartidoN1(Hilo hiloEjecucion, int numRegistro, int direccionMemoria)
+    {
+         /*vengo de bloquear el indice del otro cache*/
+
+        BloqueDatos bloqueCacheDatosOtroExtremo = simulacion.getBloqueCacheDatosN0(direccionMemoria);
+
+        if (bloqueCacheDatosOtroExtremo.getEtiqueta()== simulacion.getNumeroBloque(direccionMemoria) && bloqueCacheDatosOtroExtremo.getEstado()==Estado.COMPARTIDO) //La etiqueta corresponde al bloque y esta compartido
+        {
+               /*HAY QUE INVALIDAR EN EL OTRO CACHE ANTES DE HACER LO MISMO*/
+            simulacion.setEstadoN0(simulacion.getPosicionCacheN0(direccionMemoria), Estado.INVALIDO);
+
+                    /*AHORA SI, cargo el registro en cache*/
+            sw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.SW_ESTOYCOMPARTIDO);
+
+        }
+
+        else
+        {
+            /*Solamente carga el registro*/
+            sw_resolverFalloCacheDatos(hiloEjecucion,numRegistro,direccionMemoria,TipoDeFallo.SW_ESTOYCOMPARTIDO);
+        }
+
+    }
+
+
+    /*****************************************************/
+
+    public void guardarPalabraN1(Hilo hiloEjecucion,int numRegistro,int direccionMemoria)
+    {
+
+
+    }
+
+
+
 /*****************************************************/
 
 
