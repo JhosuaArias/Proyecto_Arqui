@@ -79,8 +79,8 @@ public class Simulacion {
         this.setCola();
         this.setMemoriaPrincipal(this.lectorHilos.getInstruccionesHilos() , this.hilos);
         this.setCaches();
-        this.setNucleos();
         this.setElementosConcurrencia();
+        this.setNucleos();
         this.runClock();
     }
 
@@ -88,17 +88,23 @@ public class Simulacion {
         while(this.sonHilosActivos()){
             this.esperarTick();
             this.ticks++;
-            System.out.println("Este es el Tick número: " + ticks);
-
+            if (this.isSlow) {
+                this.terminal.imprimirTick(this);
+                this.terminal.esperarUsuario();
+            }
+            this.esperarSegundaBarrera();
         }
 
-        this.cola = null;
-
         this.esperarTick();
+        this.cola = null;
+        this.esperarSegundaBarrera();
+
 
         try {
-            System.out.println("Finalizando Simulacion...");
             Thread.sleep(1000);
+            this.terminal.imprimirEstadoFinal(this);
+            System.out.println("Finalizando Simulacion...");
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -363,6 +369,10 @@ public class Simulacion {
 
     public void setBloqueCacheInstruccionesN1(BloqueInstrucciones bloque, int posicion){
      cacheInstruccionesN1.setBloque(bloque, posicion);
+    }
+
+    public void setBloqueCacheInstruccionesN0(BloqueInstrucciones bloqueInstrucciones, int posicion) {
+        cacheInstruccionesN0.setBloque(bloqueInstrucciones, posicion);
     }
 
     public void setInactivoHilo(int posicion) {

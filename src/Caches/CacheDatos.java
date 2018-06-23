@@ -38,7 +38,7 @@ public class CacheDatos {
         String hilera = "";
 
         for (int i = 0; i < bloques.length ; i++) {
-            hilera+= i +": " + bloques[i].toString();
+            hilera+= i +": " + bloques[i].toString()+"\n";
         }
         return hilera;
     }

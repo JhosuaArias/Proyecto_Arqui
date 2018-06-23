@@ -80,6 +80,20 @@ public class MemoriaPrincipal {
 
     @Override
     public String toString(){
-        return "Datos: " + Arrays.toString(this.datos) + "\nInstrucciones: " + Arrays.toString(this.instrucciones);
+        String memoria = "*Datos:\n";
+        int i = 0;
+        for (int[] bloque : this.datos){
+            memoria+="Bloque"+i+": "+ Arrays.toString(bloque) + "\n";
+            i++;
+        }
+
+        memoria+="*Instrucciones\n";
+        for(Instruccion[] bloque: this.instrucciones){
+            memoria+="Bloque"+i+": "+Arrays.toString(bloque)+"\n";
+            i++;
+        }
+
+
+        return memoria;
     }
 }

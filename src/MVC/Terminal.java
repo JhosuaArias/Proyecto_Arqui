@@ -117,7 +117,16 @@ public class Terminal {
         ArrayList<Hilo> hilos = simulacion.getHilos();
 
         for (Hilo hilo: hilos) {
-            System.out.print(hilo.toString());
+            System.out.print(hilo.toString()+"\n");
+        }
+    }
+
+    public void esperarUsuario(){
+        System.out.println("Presione Enter para continuar:");
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
