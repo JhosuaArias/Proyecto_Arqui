@@ -18,7 +18,17 @@ public class CacheDatos {
     }
 
     public void setBloque(BloqueDatos bloque, int posicion) {
+        if(posicion >= 0 && posicion < this.bloques.length) {
+            this.bloques[posicion] = bloque;
+        }
+    }
 
+    public void setPalabra(int posicionBloque, int posicionPalabra, int palabra){
+        if(posicionBloque >= 0 && posicionBloque < this.bloques.length) {
+            if(posicionPalabra >= 0 && posicionPalabra < 4){
+                this.bloques[posicionBloque].getPalabra()[posicionPalabra] = palabra;
+            }
+        }
     }
 
     public void setDato(int posicion, int palabra, int valor) {

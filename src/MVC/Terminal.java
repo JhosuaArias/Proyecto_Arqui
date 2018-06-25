@@ -65,25 +65,25 @@ public class Terminal {
 
     public void imprimirTick(Simulacion simulacion){
         System.out.println("-Tick número: " +simulacion.getTicks());
-        if (simulacion.getNucleo0().getHiloThread0() != null || simulacion.getNucleo0().getHiloThread1() != null) {
+        if (simulacion.getNucleo0().getHilo() != null ) {
             System.out.println("-Hilos corriendo en Núcleo 0:");
-            if(simulacion.getNucleo0().getHiloThread0() != null){
-                System.out.print(simulacion.getNucleo0().getHiloThread0().toString());
-                Pair<EstadoThread,Integer> par = simulacion.getNucleo0().getEstadoThread0();
+            if(simulacion.getNucleo0().getHilo() != null){
+                System.out.print(simulacion.getNucleo0().getHilo().toString());
+                Pair<EstadoThread,Integer> par = simulacion.getNucleo0().getEstado();
                 System.out.println("*Estado: " + par.getKey());
                 if(par.getKey() != EstadoThread.EJECUTANDO){
                     System.out.println("*Posicion de cache requerido: " + par.getValue());
                 }
             }
 
-            if(simulacion.getNucleo0().getHiloThread1() != null){
-                System.out.print(simulacion.getNucleo0().getHiloThread1().toString());
-                Pair<EstadoThread,Integer> par = simulacion.getNucleo0().getEstadoThread1();
-                System.out.println("*Estado: " + par.getKey());
-                if(par.getKey() != EstadoThread.EJECUTANDO){
-                    System.out.println("*Posicion de cache requerido: " + par.getValue());
-                }
-            }
+//            if(simulacion.getNucleo0().getHiloThread1() != null){
+//                System.out.print(simulacion.getNucleo0().getHiloThread1().toString());
+//                Pair<EstadoThread,Integer> par = simulacion.getNucleo0().getEstadoThread1();
+//                System.out.println("*Estado: " + par.getKey());
+//                if(par.getKey() != EstadoThread.EJECUTANDO){
+//                    System.out.println("*Posicion de cache requerido: " + par.getValue());
+//                }
+//            }
         }
 
         if(simulacion.getNucleo1().getHilo() != null){

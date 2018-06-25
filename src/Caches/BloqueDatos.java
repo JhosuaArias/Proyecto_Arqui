@@ -17,6 +17,18 @@ public class BloqueDatos {
         this.estado = Estado.INVALIDO;
     }
 
+    public BloqueDatos(int[] palabra, int etiqueta, Estado estado){
+        this.palabra = palabra.clone();
+        this.etiqueta = etiqueta;
+        this.estado = estado;
+    }
+
+    public BloqueDatos(BloqueDatos bloqueDatos){
+        this.palabra = bloqueDatos.getPalabra().clone();
+        this.etiqueta = bloqueDatos.getEtiqueta();
+        this.estado = bloqueDatos.estado;
+    }
+
     public int[] getPalabra() {
         return palabra;
     }

@@ -56,12 +56,11 @@ public class Nucleo implements Runnable {
                 jr(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]));
                 break;
             case 35: //LW
-                // TODO
                 //this.lw(this.id, registro, dir);
                 if(n0 != null){
                     //n0.lw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }else{
-                   // n1.lw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
+                    n1.lw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }
                 break;
             case 43: //SW

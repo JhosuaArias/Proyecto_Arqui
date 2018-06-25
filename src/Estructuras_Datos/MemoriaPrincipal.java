@@ -68,13 +68,13 @@ public class MemoriaPrincipal {
 
     public void setBloque(int[] bloque, int posicionBloque){
         if(posicionBloque >= 0 && posicionBloque <= BLOQUES_DATOS) {
-            this.datos[posicionBloque] = bloque;
+            this.datos[posicionBloque] = bloque.clone();
         }
     }
 
     public void setBloque(Instruccion[] bloque , int posicionBloque) {
         if(posicionBloque >= BLOQUES_DATOS + 1 && posicionBloque <= BLOQUES_DATOS + BLOQUES_INSTRUCCIONES + 1) {
-            this.instrucciones[posicionBloque] = bloque;
+            this.instrucciones[posicionBloque] = bloque.clone();
         }
     }
 

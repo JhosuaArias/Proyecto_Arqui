@@ -54,7 +54,7 @@ public class Simulacion {
     private Nucleo1 nucleo1;
 
     /**Constantes**/
-    private static final int NUMERO_THREADS = 4;
+    private static final int NUMERO_THREADS = 3;
     private static final int BLOQUES_CACHE_N0 = 8;
     private static final int BLOQUES_CACHE_N1 = 4;
     private static final int BLOQUES_DATOS = 24;
@@ -368,11 +368,27 @@ public class Simulacion {
 
 
     public void setBloqueCacheInstruccionesN1(BloqueInstrucciones bloque, int posicion){
-     cacheInstruccionesN1.setBloque(bloque, posicion);
+        cacheInstruccionesN1.setBloque(bloque, posicion);
     }
 
     public void setBloqueCacheInstruccionesN0(BloqueInstrucciones bloqueInstrucciones, int posicion) {
         cacheInstruccionesN0.setBloque(bloqueInstrucciones, posicion);
+    }
+
+    public void setBloqueCacheDatosN1(BloqueDatos bloqueDatos, int posicion){
+        cacheDatosN1.setBloque(bloqueDatos,posicion);
+    }
+
+    public void setBloqueCacheDatosN0(BloqueDatos bloqueDatos, int posicion){
+        cacheDatosN0.setBloque(bloqueDatos,posicion);
+    }
+
+    public void setPalabraCacheDatosN1(int posicionBloque, int posicionPalabra, int palabra){
+        this.cacheDatosN1.setPalabra(posicionBloque,posicionPalabra,palabra);
+    }
+
+    public void setPalabraCacheDatosN0(int posicionBloque, int posicionPalabra, int palabra){
+        this.cacheDatosN0.setPalabra(posicionBloque,posicionPalabra,palabra);
     }
 
     public void setInactivoHilo(int posicion) {
