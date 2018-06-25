@@ -181,31 +181,16 @@ public class Nucleo1 extends Nucleo{
                             if(this.simulacion.intentar_pedirBusDatos_Memoria()){//logré agarrar el bus de datos-memoria
                                 if(this.simulacion.intentar_pedirPosicion_CacheDatosN0(posicionCacheN0)){ //intentar bloquear la posicion en el otro caché
                                     BloqueDatos bloqueDatosN0 = this.simulacion.getBloqueCacheDatosN0(direccionMemoria);
-                                    BloqueDatos bloqueACargar;
                                     if(bloqueDatosN0.getEtiqueta() == numeroBloque) { // la etiqueta es el bloque que ocupo
-                                        switch (bloqueDatosN0.getEstado()){
-                                            case COMPARTIDO:
-                                                bloqueACargar = new BloqueDatos(bloqueDatosN0);
+                                        if (bloqueDatosN0.getEstado() == Estado.COMPARTIDO){
                                                 this.simulacion.getBloqueCacheDatosN0(direccionMemoria).setEstado(Estado.INVALIDO);
-                                                break;
-                                            case INVALIDO:
-                                                bloqueACargar = new BloqueDatos(this.simulacion.getBloqueMemoriaDatos(direccionMemoria),numeroBloque,Estado.MODIFICADO);
-                                                this.esperar40Ticks();
-                                                break;
-                                            case MODIFICADO:
-                                                this.simulacion.getBloqueCacheDatosN0(direccionMemoria).setEstado(Estado.COMPARTIDO);
-                                                bloqueACargar = new BloqueDatos(bloqueDatosN0);
-                                                //todo verificar que esto sea cierto
-                                                this.simulacion.setBloqueCacheDatosMemoria(bloqueACargar,numeroBloque);
-                                                this.esperar40Ticks();
-                                                break;
-                                            default:
-                                                bloqueACargar= null;
-                                                break;
                                         }
-                                    }else{ //la etiqueta no corresponde al bloque que ocupo
-
-                                    }
+                                    }//en caso contrario no se hace nada
+                                    this.simulacion.setPalabraCacheDatosN1(posicionCacheN1,posicionPalabra,hiloEjecucion.getRegistro(numRegistro));
+                                    this.simulacion.desbloquear_Posicion_CacheDatosN0(posicionCacheN0);
+                                    this.simulacion.desbloquear_BusDatos_Memoria();
+                                    this.simulacion.desbloquear_Posicion_CacheDatosN1(posicionCacheN1);
+                                    termine = true;
                                 }else{ // no logré bloquear la posicion del otro caché
                                     this.simulacion.desbloquear_BusDatos_Memoria();
                                     this.simulacion.desbloquear_Posicion_CacheDatosN1(posicionCacheN1);
@@ -269,6 +254,7 @@ public class Nucleo1 extends Nucleo{
                                 termine = buscarBloqueEnOtraCacheLW(numRegistro, direccionMemoria, posicionCacheN1, posicionCacheN0, numeroBloque, termine, bloqueDatosN1, posicionPalabra, hiloEjecucion);
                             }else{ //no logré bloquear el bus de datos-memoria
                                 this.simulacion.desbloquear_Posicion_CacheDatosN1(posicionCacheN1);
+                                this.esperarTick(false);
                             }
                             break;
                         case INVALIDO:
@@ -324,11 +310,11 @@ public class Nucleo1 extends Nucleo{
             }else{//No logré bloquear la posicion del otro caché, entonces desbloqueo bus y mi posicion
                 this.simulacion.desbloquear_BusDatos_Memoria();
                 this.simulacion.desbloquear_Posicion_CacheDatosN1(posicionCacheN1);
-                esperarTick(false);
+                this.esperarTick(false);
             }
         }else{ //no logré bloquear el bus de datos-memoria, vuelvo a intentar la iteracion y desbloqueo la posicion
             this.simulacion.desbloquear_Posicion_CacheDatosN1(posicionCacheN1);
-            esperarTick(false);
+            this.esperarTick(false);
         }
         return termine;
     }
