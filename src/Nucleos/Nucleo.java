@@ -60,7 +60,7 @@ public class Nucleo implements Runnable {
                 if(n0 != null){
                     //n0.lw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }else{
-                    n1.lw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
+                    n1.lw(hiloEjecucion,ejecucion[2],hiloEjecucion.getRegistro(ejecucion[1])+ejecucion[3]);
                 }
                 break;
             case 43: //SW
@@ -68,7 +68,7 @@ public class Nucleo implements Runnable {
                 if(n0 != null){
                     //n0.sw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }else{
-                    //n1.sw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
+                    n1.sw(hiloEjecucion,ejecucion[2],hiloEjecucion.getRegistro(ejecucion[1])+ejecucion[3]);
                 }
                 break;
             case 63: //Fin

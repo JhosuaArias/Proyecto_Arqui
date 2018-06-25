@@ -148,12 +148,12 @@ public class Nucleo0 extends Nucleo{
     public void run() {
         super.run();
         while (!this.simulacion.isColaNull()){
-            this.hilo = this.simulacion.pedirHiloCola();
-            if(this.hilo == null){
+//            this.hilo = this.simulacion.pedirHiloCola();
+//            if(this.hilo == null){
                 this.esperarTick(false);
-            } else {
-                this.iteracion();
-            }
+//            } else {
+//                this.iteracion();
+//            }
         }
         System.err.println("Terminé: " + Thread.currentThread().getName());
     }
