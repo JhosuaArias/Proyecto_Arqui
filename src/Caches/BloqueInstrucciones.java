@@ -13,7 +13,7 @@ public class BloqueInstrucciones {
 
     public BloqueInstrucciones() {
         this.palabra = new Instruccion[PALABRAS_BLOQUE];
-        this.etiqueta = 0;
+        this.etiqueta = -1;
         this.estado = Estado.INVALIDO;
     }
     public BloqueInstrucciones(Instruccion[] instruccion, int etiqueta, Estado estado) {

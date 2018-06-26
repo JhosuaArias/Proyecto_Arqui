@@ -11,24 +11,19 @@ public class CacheDatos {
     }
 
     public BloqueDatos getBloque(int posicion) {
-        if(posicion >= 0 && posicion < this.bloques.length) {
             return this.bloques[posicion];
-        }
-        return null;
     }
 
     public void setBloque(BloqueDatos bloque, int posicion) {
-        if(posicion >= 0 && posicion < this.bloques.length) {
             this.bloques[posicion] = bloque;
-        }
     }
 
     public void setPalabra(int posicionBloque, int posicionPalabra, int palabra){
-        if(posicionBloque >= 0 && posicionBloque < this.bloques.length) {
-            if(posicionPalabra >= 0 && posicionPalabra < 4){
-                this.bloques[posicionBloque].getPalabra()[posicionPalabra] = palabra;
-            }
-        }
+            this.bloques[posicionBloque].getPalabra()[posicionPalabra] = palabra;
+    }
+
+    public int getPalabra(int posicionBloque, int posicionPalabra){
+        return  this.bloques[posicionBloque].getPalabra()[posicionPalabra];
     }
 
     public void setDato(int posicion, int palabra, int valor) {
@@ -40,7 +35,7 @@ public class CacheDatos {
     }
 
     public void setEstado(int posicion, Estado estado) {
-
+        this.bloques[posicion].setEstado(estado);
     }
 
     @Override

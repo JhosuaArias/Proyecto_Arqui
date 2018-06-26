@@ -50,13 +50,12 @@ public class Nucleo implements Runnable {
                 bnez(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]),ejecucion[3]);
                 break;
             case 3: //Jal
-               jal(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]), hiloEjecucion.getPc());
+               jal(hiloEjecucion, ejecucion[3]);
                 break;
             case 2: //JR
                 jr(hiloEjecucion, hiloEjecucion.getRegistro(ejecucion[1]));
                 break;
             case 35: //LW
-                //this.lw(this.id, registro, dir);
                 if(n0 != null){
                     //n0.lw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }else{
@@ -64,7 +63,6 @@ public class Nucleo implements Runnable {
                 }
                 break;
             case 43: //SW
-                //TODO
                 if(n0 != null){
                     //n0.sw(hiloEjecucion,ejecucion[2],ejecucion[1]+ejecucion[3]);
                 }else{
@@ -115,10 +113,10 @@ public class Nucleo implements Runnable {
         }
     }
 
-    public void jal(Hilo hiloEjecucion, int RD, int PC){
+    public void jal(Hilo hiloEjecucion,int Imm){
 
         hiloEjecucion.setRegistro(31,hiloEjecucion.getPc()); //Deberia cambiar el registro R31 del contexto que lo pidio, el pc actual
-        hiloEjecucion.setPc(hiloEjecucion.getPc() +  RD);
+        hiloEjecucion.setPc(hiloEjecucion.getPc() +  Imm);
 
     }
 

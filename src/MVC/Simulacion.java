@@ -328,7 +328,7 @@ public class Simulacion {
     public int[] getBloqueMemoriaDatos(int direccionMemoria) {
 
         int numeroBloque = getNumeroBloque(direccionMemoria);
-        return memoriaPrincipal.getBloqueDatos(numeroBloque);
+        return memoriaPrincipal.getBloqueDatos(numeroBloque).clone();
     }
 
     public void setBloqueCacheDatosN1(int []palabras, Estado estado, int direccionMemoria) {
@@ -348,9 +348,26 @@ public class Simulacion {
 
     }
 
+    public void setBloqueCacheDatosN0(int []palabras, Estado estado, int direccionMemoria) {
+
+
+
+        /*Llenar el bloque a cargar*/
+
+        BloqueDatos bloqueNuevo= new BloqueDatos();
+
+        bloqueNuevo.setPalabra(palabras);
+        bloqueNuevo.setEtiqueta(getNumeroBloque(direccionMemoria));
+        bloqueNuevo.setEstado(estado);
+
+        /*Cargo el bloque en la cache*/
+        cacheDatosN0.setBloque(bloqueNuevo,getPosicionCacheN1(direccionMemoria));
+
+    }
+
     public void setBloqueCacheDatosMemoria(BloqueDatos bloque,int numeroBloque) {
 
-        memoriaPrincipal.setBloque(bloque.getPalabra(),numeroBloque);
+        memoriaPrincipal.setBloque(bloque.getPalabra().clone(),numeroBloque);
 
     }
 
@@ -391,9 +408,19 @@ public class Simulacion {
         this.cacheDatosN0.setPalabra(posicionBloque,posicionPalabra,palabra);
     }
 
+    public int getPalabraCacheDatosN1(int posicionBloque, int posicionPalabra){
+        return this.cacheDatosN1.getPalabra(posicionBloque,posicionPalabra);
+    }
+
+    public int getPalabraCacheDatosN0(int posicionBloque, int posicionPalabra){
+        return this.cacheDatosN0.getPalabra(posicionBloque,posicionPalabra);
+    }
+
     public void setInactivoHilo(int posicion) {
         this.hilosActivos[posicion] = false;
     }
+
+
 
     /**Getters**/
     public ArrayList<Hilo> getHilos() {

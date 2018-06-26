@@ -13,7 +13,7 @@ public class BloqueDatos {
 
     public BloqueDatos(){
         this.palabra = new int[PALABRAS_BLOQUE];
-        this.etiqueta = 0;
+        this.etiqueta = -1;
         this.estado = Estado.INVALIDO;
     }
 
