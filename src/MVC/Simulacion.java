@@ -87,12 +87,14 @@ public class Simulacion {
     private void runClock() {
         while(this.sonHilosActivos()){
             this.esperarTick();
-            this.ticks++;
             if (this.isSlow) {
-                this.terminal.imprimirTick(this);
-                this.terminal.esperarUsuario();
+                if (this.ticks%20 == 0) {
+                    this.terminal.imprimirTick(this);
+                    this.terminal.esperarUsuario();
+                }
             }
-            this.esperarSegundaBarrera();
+            this.ticks++;
+            esperarSegundaBarrera();
         }
 
         this.esperarTick();

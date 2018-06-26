@@ -11,12 +11,14 @@ public class Hilo {
     private boolean esFin;
     private int quantumRestante;
     private int quantum;
+    private int ciclosPasados;
 
     public Hilo(String nombre, int id, int quantum) {
         this.nombre = nombre;
         this.id = id;
         this.quantumRestante = quantum;
         this.quantum = quantum;
+        this.ciclosPasados = 0;
         this.setUp();
     }
 
@@ -78,6 +80,10 @@ public class Hilo {
         return valor;
     }
 
+    public void sumarCiclosPasados(){
+        this.ciclosPasados++;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -97,6 +103,7 @@ public class Hilo {
     @Override
     public String toString(){
         String hilera = "*Estado del Hilo " + this.id + "\n";
+        hilera += "*Ciclos Pasados: " + this.ciclosPasados + "\n";
         hilera += "*PC: " + this.pc + "\n";
         hilera += "*IR: " + this.ir + "\n";
         hilera += "*Quantum Restante: " + this.quantumRestante + "\n";

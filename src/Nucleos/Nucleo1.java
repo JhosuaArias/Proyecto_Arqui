@@ -138,6 +138,11 @@ public class Nucleo1 extends Nucleo{
     @Override
     public void esperarTick(boolean restarQuantum) {
         super.esperarTick(restarQuantum);
+
+        if (this.hilo != null){
+            this.hilo.sumarCiclosPasados();
+        }
+
         if(restarQuantum)
             this.hilo.restarQuantum();
         this.simulacion.esperarSegundaBarrera();
@@ -320,6 +325,7 @@ public class Nucleo1 extends Nucleo{
 
                 if (bloqueCacheDatos.getEtiqueta()!=simulacion.getNumeroBloque(direccionMemoria)) //La etiqueta no corresponde al bloque
                 {
+                    this.setEstado(EstadoThread.FALLO_CACHE_DATOS,posicion);
                     if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
                     {
                         simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
@@ -352,6 +358,8 @@ public class Nucleo1 extends Nucleo{
 
                             /*Termine LW*/
                             noTermine=false;
+
+                            this.setEstado(EstadoThread.EJECUTANDO,-1);
                         }
                     }
                 }
@@ -359,6 +367,7 @@ public class Nucleo1 extends Nucleo{
                 {
                     if(bloqueCacheDatos.getEstado()== Estado.INVALIDO)  //La etiqueta esta invalida
                     {
+                        this.setEstado(EstadoThread.FALLO_CACHE_DATOS,posicion);
                         if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
                         {
                             simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
@@ -385,6 +394,9 @@ public class Nucleo1 extends Nucleo{
 
                                 /*Termine LW*/
                                 noTermine=false;
+
+                                this.setEstado(EstadoThread.EJECUTANDO,-1);
+
                             }
 
                         }
@@ -408,7 +420,7 @@ public class Nucleo1 extends Nucleo{
 
     /*****************************/
 
-    public  void lw_VerificarSiEstaEnN0(Hilo hiloEjecucion,int numRegistro,int direccionMemoria)
+    private void lw_VerificarSiEstaEnN0(Hilo hiloEjecucion, int numRegistro, int direccionMemoria)
     {
         /*vengo de bloquear el indice del otro cache*/
 
@@ -428,7 +440,7 @@ public class Nucleo1 extends Nucleo{
 
     /*****************************/
 
-    public void cargarPalabraN1(Hilo hiloEjecucion, int numRegistro, int direccionMemoria)
+    private void cargarPalabraN1(Hilo hiloEjecucion, int numRegistro, int direccionMemoria)
     {
 
         /*Averiguo la palabra, cargo a registro, desbloqueo la posicion*/
@@ -466,6 +478,7 @@ public class Nucleo1 extends Nucleo{
 
                 if (bloqueCacheDatos.getEtiqueta()!=simulacion.getNumeroBloque(direccionMemoria)) //La etiqueta no corresponde al bloque
                 {
+                    this.setEstado(EstadoThread.FALLO_CACHE_DATOS,posicion);
                     if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
                     {
                         simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
@@ -485,6 +498,9 @@ public class Nucleo1 extends Nucleo{
 
                         noTermine = BuscarEnOtraCache(hiloEjecucion, numRegistro, direccionMemoria, noTermine, posicion, posicionOtroExtremo);
 
+                        if(!noTermine)
+                            this.setEstado(EstadoThread.EJECUTANDO,-1);
+
                     }
 
 
@@ -493,6 +509,7 @@ public class Nucleo1 extends Nucleo{
                 {
                     if(bloqueCacheDatos.getEstado()== Estado.INVALIDO)  //La etiqueta esta invalida
                     {
+                        this.setEstado(EstadoThread.FALLO_CACHE_DATOS,posicion);
                         if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
                         {
                             simulacion.desbloquear_Posicion_CacheDatosN1(posicion);
@@ -505,6 +522,8 @@ public class Nucleo1 extends Nucleo{
 
                             noTermine = BuscarEnOtraCache(hiloEjecucion, numRegistro, direccionMemoria, noTermine, posicion, posicionOtroExtremo);
 
+                            if(!noTermine)
+                                this.setEstado(EstadoThread.EJECUTANDO,-1);
                         }
 
 
@@ -514,7 +533,6 @@ public class Nucleo1 extends Nucleo{
 
                         if (bloqueCacheDatos.getEstado()== Estado.COMPARTIDO) //La etiqueta esa compartida
                         {
-                            /*FALLO DE CACHE*/
 
                             if (!simulacion.intentar_pedirBusDatos_Memoria()) //No pude bloquear el bus
                             {
@@ -588,7 +606,7 @@ public class Nucleo1 extends Nucleo{
     /*******************************************/
 
 
-    public  void sw_VerificarSiEstaEnN0(Hilo hiloEjecucion,int numRegistro,int direccionMemoria)
+    private void sw_VerificarSiEstaEnN0(Hilo hiloEjecucion, int numRegistro, int direccionMemoria)
     {
         /*vengo de bloquear el indice del otro cache*/
 
@@ -628,7 +646,7 @@ public class Nucleo1 extends Nucleo{
 
     /*****************************/
 
-    public void sw_estoyEnCompartidoN1(Hilo hiloEjecucion, int numRegistro, int direccionMemoria)
+    private void sw_estoyEnCompartidoN1(Hilo hiloEjecucion, int numRegistro, int direccionMemoria)
     {
         /*vengo de bloquear el indice del otro cache*/
 
@@ -655,7 +673,7 @@ public class Nucleo1 extends Nucleo{
 
     /*****************************************************/
 
-    public void guardarPalabraN1(Hilo hiloEjecucion,int numRegistro,int direccionMemoria)
+    private void guardarPalabraN1(Hilo hiloEjecucion, int numRegistro, int direccionMemoria)
     {
         /*Averiguo la palabra del bloque a modificar, al llegar aqui ya el cache está listo para ser modificado*/
 
