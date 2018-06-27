@@ -363,7 +363,7 @@ public class Simulacion {
         bloqueNuevo.setEstado(estado);
 
         /*Cargo el bloque en la cache*/
-        cacheDatosN0.setBloque(bloqueNuevo,getPosicionCacheN1(direccionMemoria));
+        cacheDatosN0.setBloque(bloqueNuevo,getPosicionCacheN0(direccionMemoria));
 
     }
 

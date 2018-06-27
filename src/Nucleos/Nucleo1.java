@@ -24,7 +24,7 @@ public class Nucleo1 extends Nucleo{
     public Nucleo1(Simulacion simulacion, int id){
         super(simulacion,id);
         this.estadoHilo = new Pair<>(EstadoThread.EJECUTANDO,-1);
-        this.thread = new Thread(this,"Thread 1");
+        this.thread = new Thread(this,"Thread "+id);
         this.thread.start();
     }
 
@@ -62,11 +62,7 @@ public class Nucleo1 extends Nucleo{
          * Espera de 40 ticks en lo que se resuelve el fallo
          */
 
-        int i=0;
-        while(i!=40){
-            this.esperarTick(false);
-            ++i;
-        }
+        this.esperar40Ticks();
 
         /**
          * Obtengo el bloque de instrucciones desde memoria,
@@ -141,10 +137,10 @@ public class Nucleo1 extends Nucleo{
 
         if (this.hilo != null){
             this.hilo.sumarCiclosPasados();
+            if(restarQuantum)
+                this.hilo.restarQuantum();
         }
 
-        if(restarQuantum)
-            this.hilo.restarQuantum();
         this.simulacion.esperarSegundaBarrera();
     }
 
