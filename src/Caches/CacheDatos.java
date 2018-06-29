@@ -3,6 +3,10 @@ package Caches;
 public class CacheDatos {
     private BloqueDatos[] bloques;
 
+    /**
+     * Constructor de CacheDatos.
+     * @param numeroBloques número de bloques que tendrá la caché.
+     */
     public CacheDatos(int numeroBloques) {
         this.bloques = new BloqueDatos[numeroBloques];
         for (int i = 0 ; i < this.bloques.length ; i++) {
@@ -10,6 +14,7 @@ public class CacheDatos {
         }
     }
 
+    /**Getters and Setters**/
     public BloqueDatos getBloque(int posicion) {
             return this.bloques[posicion];
     }

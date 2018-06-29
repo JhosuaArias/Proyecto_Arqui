@@ -13,6 +13,12 @@ public class Hilo {
     private int quantum;
     private int ciclosPasados;
 
+    /***
+     * Constructor de Hilo.
+     * @param nombre nombre del hilo.
+     * @param id id del hilo.
+     * @param quantum quantum que tendrá un HIlo al ser ejecutado.
+     */
     public Hilo(String nombre, int id, int quantum) {
         this.nombre = nombre;
         this.id = id;
@@ -22,6 +28,9 @@ public class Hilo {
         this.setUp();
     }
 
+    /***
+     * Método que se encarga de inicializar los registros, pc, ir y si el Hilo ya finalizó.
+     */
     private void setUp() {
         this.registros = new int[32];
         this.pc = 0;
@@ -29,16 +38,32 @@ public class Hilo {
         this.esFin = false;
     }
 
+    /***
+     * Reinicia el quantum restante.
+     */
     public void reiniciarQuantum() {
         this.quantumRestante = this.quantum;
     }
 
+    /***
+     * Resta uno al quantum restante.
+     */
     public void restarQuantum() {
         this.quantumRestante--;
     }
 
+    /***
+     * Suma 4 al Pc.
+     */
     public void sumarPc(){
         this.pc+=4;
+    }
+
+    /***
+     * Suma 1 a los ciclos que ha pasado en Hilo en ejecución.
+     */
+    public void sumarCiclosPasados(){
+        this.ciclosPasados++;
     }
 
     /**Setters and getters**/
@@ -80,9 +105,6 @@ public class Hilo {
         return valor;
     }
 
-    public void sumarCiclosPasados(){
-        this.ciclosPasados++;
-    }
 
     public String getNombre() {
         return nombre;

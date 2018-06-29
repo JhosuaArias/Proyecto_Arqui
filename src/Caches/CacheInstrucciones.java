@@ -3,6 +3,10 @@ package Caches;
 public class CacheInstrucciones {
     private BloqueInstrucciones[] bloques;
 
+    /**
+     * Constructor CacheInstrucciones.
+     * @param numeroBloques número de bloques que tendrá la caché.
+     */
     public CacheInstrucciones(int numeroBloques) {
         this.bloques = new BloqueInstrucciones[numeroBloques];
         for (int i = 0 ; i < this.bloques.length ; i++) {
@@ -10,6 +14,7 @@ public class CacheInstrucciones {
         }
     }
 
+    /**Getters and Setters**/
     public BloqueInstrucciones getBloque(int posicion) {
         if(posicion >= 0 && posicion < this.bloques.length) {
             return this.bloques[posicion];

@@ -9,11 +9,15 @@ public class LectorHilos {
     private String[] fileNames;
     private ArrayList<ArrayList<Instruccion>> instruccionesHilos;
 
+    /**Constructor de LectorHilos**/
     public LectorHilos(String[] args) {
         this.fileNames = args;
         this.instruccionesHilos = new ArrayList<>();
     }
 
+    /***
+     * Este método extrae todas las instrucciones de los hilos y las inserta en una lista de listas.
+     */
     public void setInstrucciones() {
 
         for (String hilo : fileNames) {
@@ -41,6 +45,10 @@ public class LectorHilos {
         }
     }
 
+    /***
+     * INstrucción para obtener todas las instrucciones.
+     * @return una lista de listas con todas las instrucciones.
+     */
     public ArrayList<ArrayList<Instruccion>> getInstruccionesHilos() {
         return instruccionesHilos;
     }

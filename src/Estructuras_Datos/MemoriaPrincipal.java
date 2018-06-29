@@ -18,11 +18,17 @@ public class MemoriaPrincipal {
     private static final int DIRRECION_DATOS = 0;
     private static final int DIRECCION_INSTRUCCIONES = 384;
 
+    /***
+     * Constructor de MemoriaPrincipal.
+     */
     public MemoriaPrincipal(){
         this.datos = new int[BLOQUES_DATOS][PALABRAS_BLOQUE];
         this.instrucciones = new Instruccion[BLOQUES_INSTRUCCIONES][PALABRAS_BLOQUE];
     }
 
+    /***
+     * Inicializa todas las celdas de memoria en unos.
+     */
     public void setMemoria() {
         for (int i = 0; i < BLOQUES_DATOS ; i++) {
             for (int j = 0; j < PALABRAS_BLOQUE ; j++) {
@@ -31,6 +37,11 @@ public class MemoriaPrincipal {
         }
     }
 
+    /***
+     * Mete las instrucciones en la sección de Instrucciones de la memoria principal en orden.
+     * @param instrucciones Una listas de listas con Instrucciones de todos los hilos.
+     * @param hilos La referencia de todos los hilos para definir los PCs.
+     */
     public void setInstrucciones(ArrayList<ArrayList<Instruccion>> instrucciones, ArrayList<Hilo> hilos) {
         int indiceHilo = 0;
         int indiceMemoriaBloque = -1;
@@ -50,6 +61,7 @@ public class MemoriaPrincipal {
         }
     }
 
+    /**Getters and Setters**/
     public int[] getBloqueDatos(int posicionBloque) {
         if(posicionBloque >= 0 && posicionBloque < BLOQUES_DATOS) {
             return this.datos[posicionBloque];

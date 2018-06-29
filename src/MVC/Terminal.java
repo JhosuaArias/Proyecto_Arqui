@@ -14,14 +14,18 @@ import java.util.Scanner;
 public class Terminal {
 
     private BufferedReader stdIn;
-    private ArrayList<String> messageQueue;
 
+    /***
+     * Constructor Terminal
+     */
     public Terminal() {
         this.stdIn = new BufferedReader(new InputStreamReader(System.in));
-        this.messageQueue = new ArrayList<>();
     }
 
-
+    /***
+     * Método que pregunta al usuario por el Quantum. Este se asegura de que el dato sea válido
+     * @return devuelve el Valor que digitó el usuario.
+     */
     public int askForQuantum() {
         int userInput = 0;
         try {
@@ -41,6 +45,10 @@ public class Terminal {
         return userInput;
     }
 
+    /***
+     * Método que pregunta al usuario por la velocidad de la Simulación. Rapida o Lenta.
+     * @return retorna un Booleano para determinar si la simulación es Rápida:false o Lenta:true.
+     */
     public boolean askForSimulationSpeed()  {
         String userInput = "";
         try {
@@ -63,6 +71,10 @@ public class Terminal {
         return true;
     }
 
+    /***
+     * Imprime resultados de un tick determinado.
+     * @param simulacion Referencia de la simulación para obtener la información.
+     */
     public void imprimirTick(Simulacion simulacion){
         System.out.println("-Tick número: " +simulacion.getTicks());
 
@@ -87,7 +99,14 @@ public class Terminal {
         }
     }
 
+    /***
+     * Imprime resultados al final de toda la simulación.
+     * @param simulacion Referencia de la simulación para obtener la información.
+     */
     public void imprimirEstadoFinal(Simulacion simulacion){
+
+        System.out.println("Ticks pasados: " + simulacion.getTicks());
+
         System.out.println("-Memoria Principal:");
         System.out.println(simulacion.getMemoriaPrincipal().toString());
 
@@ -111,6 +130,9 @@ public class Terminal {
         }
     }
 
+    /***
+     * Método que espera a que el usuario presione Enter para continuar.
+     */
     public void esperarUsuario(){
         System.out.println("Presione Enter para continuar:");
         try {

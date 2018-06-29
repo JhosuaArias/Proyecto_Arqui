@@ -11,24 +11,38 @@ public class BloqueDatos {
 
     private static final int PALABRAS_BLOQUE = 4;
 
+    /**
+     * Constructor de BloqueDatos.
+     */
     public BloqueDatos(){
         this.palabra = new int[PALABRAS_BLOQUE];
         this.etiqueta = -1;
         this.estado = Estado.INVALIDO;
     }
 
+    /**
+     * Constructor de BloqueDatos.
+     * @param palabra un array con las 4 palabras del bloque.
+     * @param etiqueta la etiqueta asociada al bloque.
+     * @param estado el estado del bloque.
+     */
     public BloqueDatos(int[] palabra, int etiqueta, Estado estado){
         this.palabra = palabra.clone();
         this.etiqueta = etiqueta;
         this.estado = estado;
     }
 
+    /**
+     * Constructor de BloqueDatos.
+     * @param bloqueDatos bloque de datos para copiar información.
+     */
     public BloqueDatos(BloqueDatos bloqueDatos){
         this.palabra = bloqueDatos.getPalabra().clone();
         this.etiqueta = bloqueDatos.getEtiqueta();
         this.estado = bloqueDatos.estado;
     }
 
+    /**Getters and Setters*/
     public int[] getPalabra() {
         return palabra;
     }

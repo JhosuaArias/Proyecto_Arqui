@@ -21,6 +21,11 @@ public class Nucleo1 extends Nucleo{
 
     private Thread thread;
 
+    /***
+     * Nucleo 1 Constructor. Aquí se crea un nuevo tread apra el núcleo.
+     * @param simulacion Referencia de la simulacion que creó este núcleo.
+     * @param id id del núcleo.
+     */
     public Nucleo1(Simulacion simulacion, int id){
         super(simulacion,id);
         this.estadoHilo = new Pair<>(EstadoThread.EJECUTANDO,-1);
@@ -29,7 +34,10 @@ public class Nucleo1 extends Nucleo{
     }
 
 
-
+    /***
+     * Método que se encarga de resolver un fallo de caché de instrucciones.
+     * @param pc dirección de memoria de la instrucción requerida.
+     */
     private void resolverFalloCacheInstrucciones(int pc) {
         this.setEstado(EstadoThread.FALLO_CACHE_INSTRUCCIONES,this.simulacion.getPosicionCacheN1(pc));
         /**
@@ -69,9 +77,7 @@ public class Nucleo1 extends Nucleo{
          * ahora hay que cargarlos a la cache de instrucciones
           */
         Instruccion ins[]= simulacion.getBloqueMemoriaInstruccion(pc);
-        /**
-         * Falta setBloque para cache en simulacion?
-         */
+
         int numeroBloque = this.simulacion.getNumeroBloque(pc);
         int posicion = this.simulacion.getPosicionCacheN1(pc);
         this.simulacion.setBloqueCacheInstruccionesN1(new BloqueInstrucciones(ins,numeroBloque,COMPARTIDO), posicion);
@@ -81,6 +87,11 @@ public class Nucleo1 extends Nucleo{
     }
 
 
+    /***
+     * Método que ejecuta el núcleo para ejecutar instrucciones de un hilo. Se encarga de sumar pc, ejecutar el IR,
+     * resolver fallos de caché de instrucciones, verifica si el hihlo ya terminó o su quantum llegó a cero y lo reinicia.
+     * También se encarga de devolver hilos a la Cola.
+     */
     private void iteracion() {
         boolean mismoHilo = true;
 
@@ -130,7 +141,10 @@ public class Nucleo1 extends Nucleo{
         }
     }
 
-
+    /***
+     * Método que se encarga de esperar en barreras para la sincronización de núcleos.
+     * @param restarQuantum parámetro que indica si hay que restarle quantum al hilo o no.
+     */
     @Override
     public void esperarTick(boolean restarQuantum) {
         super.esperarTick(restarQuantum);
@@ -144,6 +158,11 @@ public class Nucleo1 extends Nucleo{
         this.simulacion.esperarSegundaBarrera();
     }
 
+    /***
+     * Método que ejecuta el Thread desde el principio. Verifica si la Cola es nula, en el caso de no serlo intenta
+     * agarrar Hilos, y si obtiene un hilo ejecuta una iteración. En el caso de que la Cola sea null, el Thread debe
+     * finalizar.
+     */
     @Override
     public void run() {
         super.run();
@@ -158,8 +177,9 @@ public class Nucleo1 extends Nucleo{
         System.err.println("Terminé: " + Thread.currentThread().getName());
     }
 
-    /***********************/
-
+    /***
+     * Método para esperar 40 ticks.
+     */
     private void esperar40Ticks(){
         for(int i = 0 ; i < 40 ; i++){
             esperarTick(false);

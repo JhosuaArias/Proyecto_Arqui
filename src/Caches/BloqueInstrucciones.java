@@ -11,18 +11,28 @@ public class BloqueInstrucciones {
 
     private static final int PALABRAS_BLOQUE = 4;
 
+    /**
+     * Construdctor de BloqueInstrucciones.
+     */
     public BloqueInstrucciones() {
         this.palabra = new Instruccion[PALABRAS_BLOQUE];
         this.etiqueta = -1;
         this.estado = Estado.INVALIDO;
     }
+
+    /**
+     * Constructor de BloqueInstrucciones
+     * @param instruccion instrucciones del bloque.
+     * @param etiqueta etiqueta asociada al bloque.
+     * @param estado estado del bloque.
+     */
     public BloqueInstrucciones(Instruccion[] instruccion, int etiqueta, Estado estado) {
         this.palabra = instruccion;
         this.etiqueta = etiqueta;
         this.estado = estado;
     }
 
-
+    /**Getters and Setters**/
     public Instruccion[] getPalabra() {
         return this.palabra;
     }

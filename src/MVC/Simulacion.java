@@ -61,9 +61,11 @@ public class Simulacion {
     private static final int BYTES_BLOQUE = 16;
     private static final int PALABRAS_BLOQUE = 4;
 
-
-    int i = 0;
-
+    /***
+     * Constructor Simulacion.
+     * @param args String array con los hilos que serán ejecutados.
+     * @param terminal Referencia de la terminal para UI.
+     */
     public Simulacion(String[] args, Terminal terminal) {
         this.numeroHilos = args.length;
         this.lectorHilos = new LectorHilos(args);
@@ -71,6 +73,9 @@ public class Simulacion {
         this.ticks = 0;
     }
 
+    /***
+     * Inicializa los recursos neceesarios para la simulación.
+     */
     public void init() {
         this.lectorHilos.setInstrucciones();
         this.quantum = this.terminal.askForQuantum();
@@ -84,6 +89,10 @@ public class Simulacion {
         this.runClock();
     }
 
+    /***
+     * Método principal de simulación, es un loop que lleva el reloj, imprime datos, espera en barrera
+     * y maneja los demás threads para que finalicen.
+     */
     private void runClock() {
         while(this.sonHilosActivos()){
             this.esperarTick();
@@ -113,7 +122,10 @@ public class Simulacion {
 
     }
 
-
+    /***
+     * Método que verifica si todos los hilos han finalizado su ejecución.
+     * @return true: si algún hilo no ha terminado, false: si todos los hilos han terminado.
+     */
     private boolean sonHilosActivos(){
         for(boolean value: this.hilosActivos){
             if(value){ return true;}
@@ -121,8 +133,9 @@ public class Simulacion {
         return false;
     }
 
-    /**Setters**/
-
+    /***
+     * Inicializa un array con todos los hilos y otro que indica si aún no han fiinalizado su ejecución.
+     */
     private void setHilos(){
         this.hilos = new ArrayList<>();
         this.hilosActivos = new boolean[this.numeroHilos];
@@ -132,6 +145,9 @@ public class Simulacion {
         }
     }
 
+    /***
+     * Inicializa la Cola y la llena con todos los hilos a ejecutar.
+     */
     private void setCola() {
         this.cola = new Cola();
         for (Hilo hilo : this.hilos) {
@@ -139,12 +155,20 @@ public class Simulacion {
         }
     }
 
+    /***
+     * Inicializa la memoria y la llena con todas las instrucciones de todos los hilos.
+     * @param instrucciones una lista de listas con todas las instrucciones.
+     * @param hilos Referencia de todos los hilos.
+     */
     private void setMemoriaPrincipal(ArrayList<ArrayList<Instruccion>> instrucciones, ArrayList<Hilo> hilos){
         this.memoriaPrincipal = new MemoriaPrincipal();
         this.memoriaPrincipal.setMemoria();
         this.memoriaPrincipal.setInstrucciones(instrucciones,hilos);
     }
 
+    /***
+     *1nicializa las caches de datos e instrucciones para Núcleo 0 y Núcleo 1.
+     */
     private void setCaches() {
         this.cacheDatosN0 = new CacheDatos(BLOQUES_CACHE_N0);
         this.cacheInstruccionesN0 = new CacheInstrucciones(BLOQUES_CACHE_N0);
@@ -153,12 +177,18 @@ public class Simulacion {
         this.cacheInstruccionesN1 = new CacheInstrucciones(BLOQUES_CACHE_N1);
     }
 
+    /***
+     * Inicializa los núcleos de la simulación.
+     */
     private void setNucleos() {
 
         this.nucleo0 = new Nucleo0(this,0);
         this.nucleo1 = new Nucleo1(this,1);
     }
 
+    /***
+     * Inicializa todos los elementos de concurrencia de la simulación, como lock y barreras.
+     */
     private void setElementosConcurrencia() {
 
         this.busCacheDatos_Memoria = new ReentrantLock();
@@ -257,7 +287,7 @@ public class Simulacion {
     }
 
 
-    /*Mapeo de bloques y direcciones de memoria*/
+    /**Mapeo de bloques y direcciones de memoria**/
 
     public int getNumeroBloque(int direccionMemoria){
         return (direccionMemoria/BYTES_BLOQUE);
@@ -278,7 +308,7 @@ public class Simulacion {
         return (direccionMemoria/4)%4;
     }
 
-    /*Devolver un bloque de Cache instrucciones*/
+    /**Devolver un bloque de Cache instrucciones**/
 
     public BloqueInstrucciones getBloqueCacheInstruccionesN0(int direccionMemoria)
     {
@@ -335,10 +365,6 @@ public class Simulacion {
 
     public void setBloqueCacheDatosN1(int []palabras, Estado estado, int direccionMemoria) {
 
-
-
-        /*Llenar el bloque a cargar*/
-
         BloqueDatos bloqueNuevo= new BloqueDatos();
 
         bloqueNuevo.setPalabra(palabras);
@@ -351,10 +377,6 @@ public class Simulacion {
     }
 
     public void setBloqueCacheDatosN0(int []palabras, Estado estado, int direccionMemoria) {
-
-
-
-        /*Llenar el bloque a cargar*/
 
         BloqueDatos bloqueNuevo= new BloqueDatos();
 
